@@ -7,15 +7,35 @@ public class JsonExtensionsTests
 {
     [Fact]
     public void ASimpleObject_ShouldBeSerialized() {
-        var obj = new { Name = "John", Age = 42 };
-        var json = obj.ToJson();
-        json.Should().Be("{\"Name\":\"John\",\"Age\":42}");
+        var json = User.Default.ToJson();
+        json.Should().Be(ObjectStrings.SimpleJson);
     }
     
     [Fact]
     public void AComplexObject_ShouldBeSerialized() {
-        var obj = new { Name = "John", Age = 42, Address = new { Street = "Main", Number = 123 } };
-        var json = obj.ToJson();
-        json.Should().Be("{\"Name\":\"John\",\"Age\":42,\"Address\":{\"Street\":\"Main\",\"Number\":123}}");
+        var json = User.DefaultWithAddress.ToJson();
+        json.Should().Be(ObjectStrings.ComplexJson);
+    }
+    
+    [Fact]
+    public void ASimpleObject_ShouldBeDeserialized() {
+        var obj = ObjectStrings.SimpleJson.FromJson<User>();
+
+        obj.Should().BeEquivalentTo(User.Default);
+    }
+    
+    [Fact]
+    public void AComplexObject_ShouldBeDeserialized() {
+        var obj = ObjectStrings.ComplexJson.FromJson<User>();
+
+        obj.Should().BeEquivalentTo(User.DefaultWithAddress);
+    }
+
+    [Fact]
+    public void AComplexXmlString_ShouldBeConvertedToJson()
+    {
+        var json = ObjectStrings.ComplexXml.ToJsonFromXml();
+
+        json.Should().Be(ObjectStrings.JsonFromXml);
     }
 }
