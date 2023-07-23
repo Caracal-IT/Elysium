@@ -7,9 +7,13 @@ namespace Caracal.Text.Xml;
 public static class XmlExtensions
 {
     public static string ToXml(this object obj) {
+        var ns = new XmlSerializerNamespaces();
+        ns.Add(string.Empty, string.Empty);
+        
         var serializer = new XmlSerializer(obj.GetType());
         using var writer = new StringWriter();
-        serializer.Serialize(writer, obj);
+        serializer.Serialize(writer, obj, ns);
+        
         return writer.ToString();
     }
     
