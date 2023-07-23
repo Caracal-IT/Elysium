@@ -2,7 +2,7 @@
 
 namespace Caracal.Text.Tests.Unit.Xml;
 
-public class XmlExtensionsTests
+public sealed class XmlExtensionsTests
 {
     [Fact]
     public void ASimpleObject_ShouldBeSerialized() {

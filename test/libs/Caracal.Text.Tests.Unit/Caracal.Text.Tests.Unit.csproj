@@ -29,8 +29,4 @@
       <ProjectReference Include="..\..\..\src\libs\Caracal.Text\Caracal.Text.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Xml\Xslt\" />
-    </ItemGroup>
-
 </Project>

@@ -2,7 +2,7 @@
 
 namespace Caracal.Text.Tests.Unit.Json;
 
-public class JsonExtensionsTests
+public sealed class JsonExtensionsTests
 {
     [Fact]
     public void ASimpleObject_ShouldBeSerialized() {
