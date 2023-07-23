@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace Caracal.Text.Xml;
 
@@ -16,5 +17,12 @@ public static class XmlExtensions
         var serializer = new XmlSerializer(typeof(T));
         using var reader = new StringReader(xml);
         return (T) serializer.Deserialize(reader)! ?? throw new XmlException();
+    }
+    
+    public static string ToXmlFromJson(this string json, string rootElement = "root")
+    {
+        var jsonString = $"{{\"{rootElement}\":{json}}}";
+        var xmlDoc = JsonConvert.DeserializeXmlNode(jsonString);
+        return xmlDoc?.OuterXml??string.Empty;
     }
 }

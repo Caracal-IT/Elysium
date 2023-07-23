@@ -29,4 +29,13 @@ public class XmlExtensionsTests
 
         obj.Should().BeEquivalentTo(User.DefaultWithAddress);
     }
+    
+    [Fact]
+    public void AJsonString_ShouldBeConvertedToXml()
+    {
+        var xml = ObjectStrings.ComplexJson.ToXmlFromJson(nameof(User));
+        var expectedUser = xml.FromXml<User>();
+        
+        expectedUser.Should().BeEquivalentTo(User.DefaultWithAddress);
+    }
 }

@@ -1,5 +1,4 @@
 ﻿using Caracal.Text.Json;
-using FluentAssertions;
 
 namespace Caracal.Text.Tests.Unit.Json;
 
