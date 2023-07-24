@@ -20,7 +20,7 @@ public sealed class XsltTransformerTests
     [Fact]
     public void AXmlStringWithAttributesAndLists_ShouldBeTransformed() {
         var extensions = new Dictionary<string, object> {
-            { "utility:hash/v1", new HashUtility() }
+            { "utility:hash/v1", HashUtility.Instance }
         };
         
         const string xml = ObjectStrings.ComplexXmlWithAttributesAndLists;
