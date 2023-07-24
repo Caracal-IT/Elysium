@@ -61,7 +61,10 @@ public static class ObjectStrings
         """; 
     
     public const string ComplexXslt = """
-        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+        <xsl:stylesheet 
+            version="1.0" 
+            xmlns:scripts="utility:hash/v1"
+            xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
             <xsl:template match="User">
                 <Employee>
                     <xsl:attribute name="Id">
@@ -73,6 +76,9 @@ public static class ObjectStrings
                     <Surname>
                         <xsl:value-of select="LastName"/>
                     </Surname>
+                    <EmployeeNumber>
+                        <xsl:value-of select="scripts:Hash256(@userId)"/>
+                    </EmployeeNumber>
                     <Roles>
                         <Role>Admin</Role>
                         <Role>Employee</Role>
