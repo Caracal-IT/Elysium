@@ -15,4 +15,15 @@ public sealed class XsltTransformerTests
         
         employee.Should().BeEquivalentTo(Employee.Default);
     }
+    
+    [Fact]
+    public void AXmlStringWithAttributesAndLists_ShouldBeTransformed() {
+        const string xml = ObjectStrings.ComplexXmlWithAttributesAndLists;
+        const string xslt = ObjectStrings.ComplexXslt;
+        
+        var result = XsltTransformer.Transform(xml, xslt);
+        var employee = result.FromXml<Employee>();
+
+        employee.Should().BeEquivalentTo(Employee.Complex);
+    }
 }
