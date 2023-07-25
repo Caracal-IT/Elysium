@@ -3,7 +3,7 @@ using Caracal.Text.Tests.Unit.Utils;
 
 namespace Caracal.Text.Tests.Unit.Models;
 
-public class Employee
+public sealed class Employee
 {
     public static readonly Employee Default = new () { Id = string.Empty, FirstName = "John", Surname = "Doe"};
     public static readonly Employee Complex = new () {
