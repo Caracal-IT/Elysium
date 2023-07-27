@@ -1,0 +1,47 @@
+version: "3.9"
+services:
+  hivemq-server:
+    image: hivemq/hivemq-ce:latest
+    container_name: hivemq-server
+    deploy:
+      resources:
+        limits:
+          memory: 800M
+    mem_reservation: 800M
+    ports:
+      - "1883:1883"
+      - "8081:8080"
+      - "8883:8883"
+      - "9399:9399"
+    volumes:
+      - ./hivemq/server/conf:/opt/hivemq/conf
+      - ./hivemq/hivemq-prometheus-extension:/opt/hivemq/extensions/hivemq-prometheus-extension
+      - ../build/certs/hivemq/certs/default:/certs
+    networks:
+      - caracal-network
+    environment:
+      JAVA_OPTS: "-XX:+UnlockExperimentalVMOptions -XX:InitialRAMPercentage=30 -XX:MaxRAMPercentage=80 -XX:MinRAMPercentage=30"
+
+  hivemq-cloud:
+    container_name: hivemq-cloud
+    image: hivemq/hivemq-ce:latest
+    deploy:
+      resources:
+        limits:
+          memory: 800M
+    mem_reservation: 800M
+    ports:
+      - "1884:1883"
+      - "8084:8080"
+      - "2884:8883"
+    volumes:
+      - ./hivemq/cloud/conf:/opt/hivemq/conf
+      - ./hivemq/hivemq-prometheus-extension:/opt/hivemq/extensions/hivemq-prometheus-extension
+      - ../build/certs/hivemq/certs/cloud:/certs
+    networks:
+      - caracal-network
+    environment:
+      JAVA_OPTS: "-XX:+UnlockExperimentalVMOptions -XX:InitialRAMPercentage=30 -XX:MaxRAMPercentage=80 -XX:MinRAMPercentage=30"
+      
+networks:
+  caracal-network:

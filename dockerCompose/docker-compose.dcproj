@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" Sdk="Microsoft.Docker.Sdk">
+  <PropertyGroup Label="Globals">
+    <ProjectVersion>2.0</ProjectVersion>
+    <DockerTargetOS>Windows</DockerTargetOS>
+    <ProjectGuid>c89af81c-96bb-46f2-b0be-6cda86b7fa74</ProjectGuid>
+    <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
+    <DockerServiceUrl>http://{ServiceIPAddress}</DockerServiceUrl>
+    <DockerServiceName>visualstudiodockersample</DockerServiceName>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="docker-compose.override.yml">
+      <DependentUpon>docker-compose.yml</DependentUpon>
+    </None>
+    <None Include="docker-compose.yml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".dockerignore" />
+    <Content Include="elk\.env" />
+    <Content Include="elk\certs\ca.zip" />
+    <Content Include="elk\certs\ca\ca.crt" />
+    <Content Include="elk\certs\ca\ca.key" />
+    <Content Include="elk\certs\certs.zip" />
+    <Content Include="elk\certs\es01\es01.crt" />
+    <Content Include="elk\certs\es01\es01.key" />
+    <Content Include="elk\certs\es02\es02.crt" />
+    <Content Include="elk\certs\es02\es02.key" />
+    <Content Include="elk\certs\es03\es03.crt" />
+    <Content Include="elk\certs\es03\es03.key" />
+    <Content Include="elk\certs\instances.yml" />
+    <Content Include="elk\docker-compose.yml" />
+    <Content Include="elk\filebeat.yml" />
+    <Content Include="elk\kibana.yml" />
+    <Content Include="elk\logstash.conf" />
+    <Content Include="elk\logstash.yml" />
+    <Content Include="grafana-storage\alerting\1\__default__.tmpl" />
+    <Content Include="grafana-storage\grafana.db" />
+    <Content Include="grafana\grafana.ini" />
+    <Content Include="grafana\HiveMQ-Dashboard-Prometheus.json" />
+    <Content Include="hivemq\cloud\conf\config.xml" />
+    <Content Include="hivemq\cloud\conf\config.xsd" />
+    <Content Include="hivemq\cloud\conf\logback.xml" />
+    <Content Include="hivemq\hivemq-prometheus-extension\hivemq-extension.xml" />
+    <Content Include="hivemq\hivemq-prometheus-extension\hivemq-prometheus-extension-4.0.8.jar" />
+    <Content Include="hivemq\hivemq-prometheus-extension\LICENSE" />
+    <Content Include="hivemq\hivemq-prometheus-extension\prometheusConfiguration.properties" />
+    <Content Include="hivemq\hivemq-prometheus-extension\README.html" />
+    <Content Include="hivemq\hivemq-prometheus-extension\README.txt" />
+    <Content Include="hivemq\server\conf\config.xml" />
+    <Content Include="hivemq\server\conf\config.xsd" />
+    <Content Include="hivemq\server\conf\logback.xml" />
+    <Content Include="prometheus\certs\divigraph-dev.crt" />
+    <Content Include="prometheus\certs\divigraph-dev.key" />
+    <Content Include="prometheus\prometheus.yml" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,33 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /logs/caracal/*.log
+    scan_frequency: 5s
+    ignore_older: 5m
+
+  - type: mqtt
+    tags: ["json"]
+    fields:
+      app_name: Caracal MQTT
+    qos: 1
+    retained: true
+    hosts:
+      - tcp://host.docker.internal:1883
+    topics:
+      - elastic/#
+
+  - type: mqtt
+    tags: [ "json", "services" ]
+    fields:
+      app_name: Caracal MQTT Services
+    qos: 1
+    retained: true
+    hosts:
+      - tcp://host.docker.internal:1884
+    topics:
+      - +/services/#
+
+
+output.logstash:
+  hosts: ["logstash:5044"]
