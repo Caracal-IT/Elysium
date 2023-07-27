@@ -5,6 +5,29 @@ namespace Caracal.Lang.Tests.Unit;
 public sealed class ResultTests
 {
     [Fact]
+    public void ShouldCreateResultWithValue()
+    {
+        var result = new Result<int>(42);
+        
+        result.Value.Should().Be(42);
+        result.Exception.Should().BeNull();
+        result.IsSuccess.Should().BeTrue();
+        result.IsFaulted.Should().BeFalse();
+    }
+    
+    [Fact]
+    public void ShouldCreateResultWithException()
+    {
+        var exception = new Exception();
+        var result = new Result<int>(exception);
+        
+        result.Value.Should().Be(default);
+        result.Exception.Should().Be(exception);
+        result.IsSuccess.Should().BeFalse();
+        result.IsFaulted.Should().BeTrue();
+    }
+
+    [Fact]
     public void ImplicitOperator_ShouldCreateResultWithValue()
     {
         Result<int> result = 42;
