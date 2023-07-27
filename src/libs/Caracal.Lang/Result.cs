@@ -22,6 +22,14 @@ public readonly struct Result<T>
         Exception = exception;
     }
     
+    public void Match(Action<T> onSuccess, Action<Exception> onFaulted)
+    {
+        if (IsSuccess)
+            onSuccess(Value!);
+        else
+            onFaulted(Exception!);
+    }
+    
     public static implicit operator Result<T>(T value) =>
         new (value);
     

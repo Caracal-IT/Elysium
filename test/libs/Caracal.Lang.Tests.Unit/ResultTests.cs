@@ -26,6 +26,29 @@ public sealed class ResultTests
         result.IsSuccess.Should().BeFalse();
         result.IsFaulted.Should().BeTrue();
     }
+    
+    [Fact]
+    public void Match_ShouldCallOnSuccess()
+    {
+        var result = new Result<int>(42);
+        var called = 0;
+        
+        result.Match(value => called = value, null!);
+        
+        called.Should().Be(result.Value);
+    }
+    
+    [Fact]
+    public void Match_ShouldCallOnFaulted()
+    {
+        var exception = new Exception();
+        var result = new Result<int>(exception);
+        var called = new Exception();
+        
+        result.Match(null!, ex => called = ex);
+        
+        called.Should().Be(exception);
+    }
 
     [Fact]
     public void ImplicitOperator_ShouldCreateResultWithValue()
