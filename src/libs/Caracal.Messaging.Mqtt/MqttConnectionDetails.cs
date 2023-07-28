@@ -1,8 +1,9 @@
 using MQTTnet.Client;
+using MQTTnet.Extensions.ManagedClient;
 
 namespace Caracal.Messaging.Mqtt;
 
 public sealed class MqttConnectionDetails: ConnectionDetails
 {
-    public required IMqttClient MqttClient { get; init; }
+    public required IManagedMqttClient MqttClient { get; init; }
 }

@@ -1,30 +1,63 @@
 using Caracal.Lang;
 using MQTTnet.Client;
+using MQTTnet.Extensions.ManagedClient;
 
 namespace Caracal.Messaging.Mqtt;
 
-public sealed class MqttConnection: IConnection
+public sealed class MqttConnection: IConnection, IDisposable
 {
-    private readonly IMqttClient _client;
+    private readonly IManagedMqttClient _client;
     private readonly MqttConnectionString _connectionString;
 
-    public MqttConnection(IMqttClient client, MqttConnectionString connectionString)
+    public MqttConnection(IManagedMqttClient client, MqttConnectionString connectionString)
     {
         _client = client;
         _connectionString = connectionString;
     }
 
-    public bool IsConnected => _client.IsConnected;
-
     public Task<Result<ConnectionDetails>> ConnectAsync(CancellationToken cancellationToken = default)
     {
-        var result = new Result<ConnectionDetails>(new MqttConnectionDetails { MqttClient = _client });
+        if (!_client.IsStarted)
+            _client.StartAsync(CreateManagedMqttClientOptions());
 
-        return Task.FromResult(result);
+        return Task.FromResult(CreateResult());
     }
 
-    public Task<Result<ConnectionDetails>> DisconnectAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<ConnectionDetails>> DisconnectAsync(CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        if (!_client.IsStarted) return CreateResult();
+        
+        var counter = 0;
+        while (_client.PendingApplicationMessagesCount > 0 && counter < 10)
+        {
+            await Task.Delay(100, cancellationToken);
+            counter++;
+        }
+            
+        await _client.StopAsync();
+
+        return CreateResult();
+    }
+    
+    public void Dispose() => _client.Dispose();
+
+    private ManagedMqttClientOptions CreateManagedMqttClientOptions()
+    {
+        return new ManagedMqttClientOptions
+        {
+            ClientOptions = new MqttClientOptionsBuilder()
+                .WithClientId(_connectionString.ClientId)
+                .WithTcpServer(_connectionString.Host, _connectionString.Port)
+                .Build()
+        };
+    }
+    
+    private Result<ConnectionDetails> CreateResult()
+    {
+        return new Result<ConnectionDetails>(new MqttConnectionDetails
+        {
+            MqttClient = _client,
+            IsConnected = _client.IsStarted
+        });
     }
 }
