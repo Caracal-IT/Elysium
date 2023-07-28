@@ -8,6 +8,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Caracal.Lang\Caracal.Lang.csproj" />
+      <ProjectReference Include="..\Caracal.Messaging\Caracal.Messaging.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MQTTnet" Version="4.2.1.781" />
+      <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.2.1.781" />
     </ItemGroup>
 
 </Project>

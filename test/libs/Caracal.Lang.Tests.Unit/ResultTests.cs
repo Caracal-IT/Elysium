@@ -30,24 +30,18 @@ public sealed class ResultTests
     [Fact]
     public void Match_ShouldCallOnSuccess()
     {
-        var result = new Result<int>(42);
-        var called = 0;
-        
-        result.Match(value => called = value, null!);
-        
-        called.Should().Be(result.Value);
+        var result = new Result<int>(42).Match(value => value, null!);
+
+        result.Should().Be(42);
     }
     
     [Fact]
     public void Match_ShouldCallOnFaulted()
     {
         var exception = new Exception();
-        var result = new Result<int>(exception);
-        var called = new Exception();
+        var result = new Result<int>(exception).Match(null!, ex =>  ex);
         
-        result.Match(null!, ex => called = ex);
-        
-        called.Should().Be(exception);
+        result.Should().Be(exception);
     }
 
     [Fact]

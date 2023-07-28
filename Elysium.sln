@@ -34,6 +34,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caracal.Lang", "src\libs\Ca
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caracal.Lang.Tests.Unit", "test\libs\Caracal.Lang.Tests.Unit\Caracal.Lang.Tests.Unit.csproj", "{478625C2-F694-4923-B7DA-C4D89670A199}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caracal.Messaging.Mqtt", "src\libs\Caracal.Messaging.Mqtt\Caracal.Messaging.Mqtt.csproj", "{D2A7CC82-76AA-4513-8391-984B7D4B7113}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caracal.Messaging.Mqtt.Tests.Unit", "test\libs\Caracal.Messaging.Mqtt.Tests.Unit\Caracal.Messaging.Mqtt.Tests.Unit.csproj", "{CD1760B7-1FA8-4C87-A893-E32A3AB53687}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +58,8 @@ Global
 		{C89AF81C-96BB-46F2-B0BE-6CDA86B7FA74} = {50FF4E3F-2DFE-4FD0-9C5E-715F1B1A50CF}
 		{B73CB9E7-7D8E-4DBE-8D38-0E4C46488BEF} = {8765576F-B9D1-4D96-BA28-0D2383047C20}
 		{478625C2-F694-4923-B7DA-C4D89670A199} = {C29CA08D-27B4-4106-A9D4-048DFA156DB7}
+		{D2A7CC82-76AA-4513-8391-984B7D4B7113} = {8765576F-B9D1-4D96-BA28-0D2383047C20}
+		{CD1760B7-1FA8-4C87-A893-E32A3AB53687} = {C29CA08D-27B4-4106-A9D4-048DFA156DB7}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2264FF2D-2119-400A-B4FD-42D3D411147F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -88,5 +94,13 @@ Global
 		{478625C2-F694-4923-B7DA-C4D89670A199}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{478625C2-F694-4923-B7DA-C4D89670A199}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{478625C2-F694-4923-B7DA-C4D89670A199}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2A7CC82-76AA-4513-8391-984B7D4B7113}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2A7CC82-76AA-4513-8391-984B7D4B7113}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2A7CC82-76AA-4513-8391-984B7D4B7113}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2A7CC82-76AA-4513-8391-984B7D4B7113}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD1760B7-1FA8-4C87-A893-E32A3AB53687}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD1760B7-1FA8-4C87-A893-E32A3AB53687}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD1760B7-1FA8-4C87-A893-E32A3AB53687}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD1760B7-1FA8-4C87-A893-E32A3AB53687}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
