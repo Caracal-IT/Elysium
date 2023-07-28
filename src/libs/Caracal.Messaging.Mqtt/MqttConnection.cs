@@ -18,7 +18,7 @@ public sealed class MqttConnection: IConnection, IDisposable
     public async Task<Result<ConnectionDetails>> ConnectAsync(CancellationToken cancellationToken = default)
     {
         if (!_client.IsStarted)
-            await _client.StartAsync(CreateManagedMqttClientOptions()).ConfigureAwait(false);
+            await _client.StartAsync(_connectionString.Build()).ConfigureAwait(false);
 
         return CreateResult();
     }
@@ -41,17 +41,6 @@ public sealed class MqttConnection: IConnection, IDisposable
     
     public void Dispose() => _client.Dispose();
 
-    private ManagedMqttClientOptions CreateManagedMqttClientOptions()
-    {
-        return new ManagedMqttClientOptions
-        {
-            ClientOptions = new MqttClientOptionsBuilder()
-                .WithClientId(_connectionString.ClientId)
-                .WithTcpServer(_connectionString.Host, _connectionString.Port)
-                .Build()
-        };
-    }
-    
     private Result<ConnectionDetails> CreateResult()
     {
         return new Result<ConnectionDetails>(new MqttConnectionDetails
