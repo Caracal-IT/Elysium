@@ -15,12 +15,12 @@ public sealed class MqttConnection: IConnection, IDisposable
         _connectionString = connectionString;
     }
 
-    public Task<Result<ConnectionDetails>> ConnectAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<ConnectionDetails>> ConnectAsync(CancellationToken cancellationToken = default)
     {
         if (!_client.IsStarted)
-            _client.StartAsync(CreateManagedMqttClientOptions()).ConfigureAwait(false);
+            await _client.StartAsync(CreateManagedMqttClientOptions()).ConfigureAwait(false);
 
-        return Task.FromResult(CreateResult());
+        return CreateResult();
     }
 
     public async Task<Result<ConnectionDetails>> DisconnectAsync(CancellationToken cancellationToken = default)
