@@ -18,7 +18,7 @@ public sealed class MqttConnection: IConnection, IDisposable
     public Task<Result<ConnectionDetails>> ConnectAsync(CancellationToken cancellationToken = default)
     {
         if (!_client.IsStarted)
-            _client.StartAsync(CreateManagedMqttClientOptions());
+            _client.StartAsync(CreateManagedMqttClientOptions()).ConfigureAwait(false);
 
         return Task.FromResult(CreateResult());
     }
@@ -30,11 +30,11 @@ public sealed class MqttConnection: IConnection, IDisposable
         var counter = 0;
         while (_client.PendingApplicationMessagesCount > 0 && counter < 10)
         {
-            await Task.Delay(100, cancellationToken);
+            await Task.Delay(100, cancellationToken).ConfigureAwait(false);
             counter++;
         }
             
-        await _client.StopAsync();
+        await _client.StopAsync().ConfigureAwait(false);
 
         return CreateResult();
     }

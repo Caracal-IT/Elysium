@@ -1,7 +1,5 @@
-using System.Text;
 using Caracal.Lang;
 using MQTTnet;
-using MQTTnet.Client;
 using MQTTnet.Extensions.ManagedClient;
 
 namespace Caracal.Messaging.Mqtt.Tests.Unit;
@@ -21,7 +19,7 @@ public class MqttReadOnlyClientTests
         {
             Topic = new Topic
             {
-                Name = "test/" + Guid.NewGuid(),
+                Name = $"test/{Guid.NewGuid()}",
                 QualityOfServiceLevel = 1,
                 Retain = true
             },

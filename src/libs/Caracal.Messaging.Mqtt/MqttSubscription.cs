@@ -2,7 +2,7 @@ using Caracal.Lang;
 
 namespace Caracal.Messaging.Mqtt;
 
-public class MqttSubscription: ISubscription
+public sealed class MqttSubscription: ISubscription
 {
     public Task<Result<bool>> UnsubscribeAsync(CancellationToken cancellationToken = default)
     {

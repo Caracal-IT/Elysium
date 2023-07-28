@@ -5,7 +5,7 @@ public readonly struct Topic
     public Topic()
     {
         Name = "Unknown";
-        QualityOfServiceLevel = 1;
+        QualityOfServiceLevel = 0x01;
         Retain = false;
     }
 

@@ -2,7 +2,7 @@ using Caracal.Lang;
 
 namespace Caracal.Messaging.Mqtt;
 
-public class MqttReadOnlyClient: IReadOnlyClient
+public sealed class MqttReadOnlyClient: IReadOnlyClient
 {
     private readonly IConnection _connection;
 
@@ -10,7 +10,7 @@ public class MqttReadOnlyClient: IReadOnlyClient
 
     public async Task<Result<ISubscription>> SubscribeAsync(Topic topic, CancellationToken cancellationToken = default)
     {
-        var conn = await _connection.ConnectAsync(cancellationToken);
+        var conn = await _connection.ConnectAsync(cancellationToken).ConfigureAwait(false);
 
         return conn.Match<Result<ISubscription>>(
             onSuccess: CreateSubscription,
