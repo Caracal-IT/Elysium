@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Caracal.Lang\Caracal.Lang.csproj" />
+    </ItemGroup>
+
 </Project>
