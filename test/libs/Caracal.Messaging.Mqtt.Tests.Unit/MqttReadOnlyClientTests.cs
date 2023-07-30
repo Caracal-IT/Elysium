@@ -33,6 +33,7 @@ public class MqttReadOnlyClientTests
     //[Fact]
     public async Task Test8()
     {
+        await Task.Delay(100);
         var result = string.Empty;
         await using var connection = new MqttConnection();
         using var client = new MqttClient(connection);
