@@ -24,4 +24,6 @@ public sealed class MqttReadOnlyClient : IReadOnlyClient
             return new MqttSubscription(mqttConnDetails, topic);
         }
     }
+
+    public void Dispose() => _connection.Dispose();
 }

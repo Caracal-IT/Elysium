@@ -26,7 +26,7 @@ public sealed class MqttWriteOnlyClient: IWriteOnlyClient
     {
         if (connectionDetails is not MqttConnectionDetails mqttConnectionDetails) return false;
         
-        await mqttConnectionDetails.MqttClient
+        await mqttConnectionDetails.MqttClient!
                                    .EnqueueAsync(CreateMessage(message))
                                    .ConfigureAwait(false);
         return true;
@@ -48,4 +48,6 @@ public sealed class MqttWriteOnlyClient: IWriteOnlyClient
         
         return msg;
     }
+
+    public void Dispose() => _connection.Dispose();
 }

@@ -1,9 +1,7 @@
 namespace Caracal.Messaging;
 
-public interface ISubscription
+public interface ISubscription: IDisposable
 {
-    Task<Result<bool>> UnsubscribeAsync(CancellationToken cancellationToken = default);
-    
     IAsyncEnumerable<Result<Message>> GetNextAsync(CancellationToken cancellationToken = default);
     IAsyncEnumerable<Result<Message>> GetNextAsync(TimeSpan timeoutDuration, CancellationToken cancellationToken = default);
 }

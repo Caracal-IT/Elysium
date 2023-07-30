@@ -1,5 +1,5 @@
 using Caracal.Lang;
-using MQTTnet.Client;
+using MQTTnet;
 using MQTTnet.Extensions.ManagedClient;
 
 namespace Caracal.Messaging.Mqtt;
@@ -9,10 +9,15 @@ public sealed class MqttConnection: IConnection, IDisposable
     private readonly IManagedMqttClient _client;
     private readonly MqttConnectionString _connectionString;
 
-    public MqttConnection(IManagedMqttClient client, MqttConnectionString connectionString)
-    {
-        _client = client;
-        _connectionString = connectionString;
+    public MqttConnection(): this(null, null) { }
+
+    public MqttConnection(MqttConnectionString connectionString): this(null, connectionString) { }
+    
+    
+    private MqttConnection(IManagedMqttClient? client, MqttConnectionString? connectionString)
+     {
+        _client = client??new MqttFactory().CreateManagedMqttClient();
+        _connectionString = connectionString??new MqttConnectionString();
     }
 
     public async Task<Result<ConnectionDetails>> ConnectAsync(CancellationToken cancellationToken = default)

@@ -3,7 +3,10 @@ using MQTTnet.Extensions.ManagedClient;
 
 namespace Caracal.Messaging.Mqtt;
 
-public sealed class MqttConnectionDetails: ConnectionDetails
+public sealed class MqttConnectionDetails: ConnectionDetails, IDisposable
 {
-    public required IManagedMqttClient MqttClient { get; init; }
+    internal IManagedMqttClient? MqttClient;
+
+    public void Dispose() =>
+        MqttClient?.Dispose();
 }
