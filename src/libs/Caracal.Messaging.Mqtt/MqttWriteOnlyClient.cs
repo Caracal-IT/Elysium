@@ -39,7 +39,7 @@ public sealed class MqttWriteOnlyClient: IWriteOnlyClient
             Id = Guid.NewGuid(),
             ApplicationMessage = new MqttApplicationMessage()
             {
-                Topic = message.Topic.Name,
+                Topic = message.Topic.Path,
                 PayloadSegment = message.Payload,
                 QualityOfServiceLevel = (MqttQualityOfServiceLevel)message.Topic.QualityOfServiceLevel,
                 Retain = message.Topic.Retain

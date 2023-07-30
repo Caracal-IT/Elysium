@@ -4,12 +4,12 @@ public readonly struct Topic
 {
     public Topic()
     {
-        Name = "Unknown";
+        Path = "Unknown";
         QualityOfServiceLevel = 0x01;
         Retain = false;
     }
 
-    public required string Name { get; init; }
+    public required string Path { get; init; }
 
     public bool Retain { get; init; } = false;
 

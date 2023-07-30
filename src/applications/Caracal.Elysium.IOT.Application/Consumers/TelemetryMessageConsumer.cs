@@ -26,7 +26,7 @@ public class TelemetryMessageConsumer: IConsumer<TelemetryMessage>
         {
             Topic = new Topic
             {
-                Name = $"Device/{Guid.NewGuid()}",
+                Path = $"Device/{Guid.NewGuid()}",
                 QualityOfServiceLevel = 1,
                 Retain = true
             },

@@ -2,7 +2,7 @@ using Caracal.Lang;
 
 namespace Caracal.Messaging.Mqtt;
 
-public sealed class MqttReadOnlyClient: IReadOnlyClient
+public sealed class MqttReadOnlyClient : IReadOnlyClient
 {
     private readonly IConnection _connection;
 
@@ -12,15 +12,16 @@ public sealed class MqttReadOnlyClient: IReadOnlyClient
     {
         var conn = await _connection.ConnectAsync(cancellationToken).ConfigureAwait(false);
 
-        return conn.Match<Result<ISubscription>>(
+        return conn.Match(
             onSuccess: CreateSubscription,
             onFaulted: ex => ex);
-    }
 
-    private Result<ISubscription> CreateSubscription(ConnectionDetails details)
-    {
-        var mqttConnDetails = details as MqttConnectionDetails;
-        
-        return new MqttSubscription();
+        Result<ISubscription> CreateSubscription(ConnectionDetails details)
+        {
+            if (details is not MqttConnectionDetails mqttConnDetails)
+                return new Result<ISubscription>(new Exception("ConnectionDetails is not of type MqttConnectionDetails"));
+
+            return new MqttSubscription(mqttConnDetails, topic);
+        }
     }
 }
