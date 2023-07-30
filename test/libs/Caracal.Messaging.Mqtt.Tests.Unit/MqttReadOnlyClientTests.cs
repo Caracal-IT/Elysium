@@ -16,7 +16,7 @@ public class MqttReadOnlyClientTests
     public async Task Test7()
     {
         await Task.Delay(100);
-        using var connection = new MqttConnection();
+        await using var connection = new MqttConnection();
         using var client = new MqttReadOnlyClient(connection);
         
         var topic = new Topic { Path = $"test/1" };
