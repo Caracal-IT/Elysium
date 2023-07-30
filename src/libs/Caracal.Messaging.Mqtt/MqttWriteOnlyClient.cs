@@ -1,6 +1,7 @@
 using Caracal.Lang;
 using MQTTnet;
 using MQTTnet.Extensions.ManagedClient;
+using MQTTnet.Formatter;
 using MQTTnet.Protocol;
 
 namespace Caracal.Messaging.Mqtt;
@@ -22,27 +23,29 @@ public sealed class MqttWriteOnlyClient: IWriteOnlyClient
         return conn.Exception!;
     }
 
-    private static async Task<Result<bool>> OnSuccess(Message message, ConnectionDetails connectionDetails)
+    private async Task<Result<bool>> OnSuccess(Message message, ConnectionDetails connectionDetails)
     {
         if (connectionDetails is not MqttConnectionDetails mqttConnectionDetails) return false;
         
         await mqttConnectionDetails.MqttClient!
                                    .EnqueueAsync(CreateMessage(message))
                                    .ConfigureAwait(false);
+        
         return true;
     }
 
-    private static ManagedMqttApplicationMessage CreateMessage(Message message)
+    private ManagedMqttApplicationMessage CreateMessage(Message message)
     {
         var msg = new ManagedMqttApplicationMessage()
         {
             Id = Guid.NewGuid(),
-            ApplicationMessage = new MqttApplicationMessage()
+            ApplicationMessage = new MqttApplicationMessage
             {
                 Topic = message.Topic.Path,
                 PayloadSegment = message.Payload,
                 QualityOfServiceLevel = (MqttQualityOfServiceLevel)message.Topic.QualityOfServiceLevel,
-                Retain = message.Topic.Retain
+                Retain = message.Topic.Retain,
+                ResponseTopic = _connection.ConnectionString.ProtocolVersion == MqttProtocolVersion.V500 ?  message.ResponseTopic?.Path : null,
             }
         };
         

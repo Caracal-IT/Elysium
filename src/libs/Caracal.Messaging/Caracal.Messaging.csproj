@@ -10,4 +10,9 @@
       <ProjectReference Include="..\Caracal.Lang\Caracal.Lang.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="Caracal.Messaging.Mqtt" />
+        <InternalsVisibleTo Include="Caracal.Messaging.Mqtt.Tests.Unit" />
+    </ItemGroup>
+
 </Project>

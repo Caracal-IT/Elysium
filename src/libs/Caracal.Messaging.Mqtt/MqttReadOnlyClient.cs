@@ -4,9 +4,9 @@ namespace Caracal.Messaging.Mqtt;
 
 public sealed class MqttReadOnlyClient : IReadOnlyClient
 {
-    private readonly IConnection _connection;
+    private readonly MqttConnection _connection;
 
-    public MqttReadOnlyClient(IConnection connection) => _connection = connection;
+    public MqttReadOnlyClient(MqttConnection connection) => _connection = connection;
 
     public async Task<Result<ISubscription>> SubscribeAsync(Topic topic, CancellationToken cancellationToken = default)
     {

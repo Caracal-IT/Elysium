@@ -89,7 +89,8 @@ public sealed class MqttSubscription: ISubscription
             new Message
             {
                 Payload = item.ApplicationMessage.PayloadSegment.ToArray(),
-                Topic = new Topic { Path = item.ApplicationMessage.Topic }
+                Topic = new Topic { Path = item.ApplicationMessage.Topic },
+                ResponseTopic = new Topic { Path = item.ApplicationMessage.ResponseTopic, Retain = false }
             });
     }
 

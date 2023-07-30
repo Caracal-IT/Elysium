@@ -6,8 +6,6 @@ using Caracal.IOT;
 using Caracal.Messaging;
 using Caracal.Messaging.Mqtt;
 using MassTransit;
-using MQTTnet;
-using MQTTnet.Extensions.ManagedClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +15,7 @@ builder.Services
     .AddSingleton<IWriteOnlyClient>(service =>
     {
         var connectionString = new MqttConnectionString();
-        var mqttClient = new MqttFactory().CreateManagedMqttClient();
-        var connection = new MqttConnection(mqttClient, connectionString);
+        var connection = new MqttConnection(connectionString);
         return new MqttWriteOnlyClient(connection);
     });
 

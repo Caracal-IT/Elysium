@@ -4,54 +4,66 @@ using MQTTnet.Extensions.ManagedClient;
 
 namespace Caracal.Messaging.Mqtt;
 
-public sealed class MqttConnection: IConnection, IDisposable
+public sealed class MqttConnection: IConnection, IAsyncDisposable
 {
-    private readonly IManagedMqttClient _client;
-    private readonly MqttConnectionString _connectionString;
+    internal IManagedMqttClient Client { get; }
+    internal MqttConnectionString ConnectionString { get; }
 
     public MqttConnection(): this(null, null) { }
 
     public MqttConnection(MqttConnectionString connectionString): this(null, connectionString) { }
     
-    
     private MqttConnection(IManagedMqttClient? client, MqttConnectionString? connectionString)
      {
-        _client = client??new MqttFactory().CreateManagedMqttClient();
-        _connectionString = connectionString??new MqttConnectionString();
+        Client = client??new MqttFactory().CreateManagedMqttClient();
+        ConnectionString = connectionString??new MqttConnectionString();
     }
 
     public async Task<Result<ConnectionDetails>> ConnectAsync(CancellationToken cancellationToken = default)
     {
-        if (!_client.IsStarted)
-            await _client.StartAsync(_connectionString.Build()).ConfigureAwait(false);
+        if (!Client.IsStarted)
+            await Client.StartAsync(ConnectionString.Build()).ConfigureAwait(false);
 
         return CreateResult();
     }
 
     public async Task<Result<ConnectionDetails>> DisconnectAsync(CancellationToken cancellationToken = default)
     {
-        if (!_client.IsStarted) return CreateResult();
+        if (!Client.IsStarted) return CreateResult();
         
         var counter = 0;
-        while (_client.PendingApplicationMessagesCount > 0 && counter < 10)
+        while (Client.PendingApplicationMessagesCount > 0 && counter < 10)
         {
             await Task.Delay(100, cancellationToken).ConfigureAwait(false);
             counter++;
         }
             
-        await _client.StopAsync().ConfigureAwait(false);
+        await Client.StopAsync().ConfigureAwait(false);
 
         return CreateResult();
     }
     
-    public void Dispose() => _client.Dispose();
+    public void Dispose() =>
+        Client.Dispose();
 
     private Result<ConnectionDetails> CreateResult()
     {
         return new Result<ConnectionDetails>(new MqttConnectionDetails
         {
-            MqttClient = _client,
-            IsConnected = _client.IsStarted
+            MqttClient = Client,
+            IsConnected = Client.IsStarted
         });
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        var counter = 0;
+        while (counter < 20 && Client.PendingApplicationMessagesCount > 0)
+        {
+            await Task.Delay(100);
+            counter++;
+        }
+        
+        Dispose();
     }
 }
