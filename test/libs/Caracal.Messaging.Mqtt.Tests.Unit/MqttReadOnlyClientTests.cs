@@ -40,8 +40,11 @@ public class MqttReadOnlyClientTests
 
         var topic = new Topic { Path = $"test/command" };
         var responseTopic = new Topic { Path = $"test/response" };
-        var message = new Message { Topic = topic, Payload = Encoding.UTF8.GetBytes($"Request {Random.Shared.Next(1, 500)}") };
+        var request = $"Request {Random.Shared.Next(1, 500)}";
+        var message = new Message { Topic = topic, Payload = Encoding.UTF8.GetBytes(request)};
 
+        _testOutputHelper.WriteLine(request);
+        
         var subscription = await client.PublishCommandAsync(message, responseTopic, CancellationToken.None);
         await foreach (var m in subscription.Value!.GetNextAsync(TimeSpan.FromSeconds(5), CancellationToken.None).ConfigureAwait(false))
         {
