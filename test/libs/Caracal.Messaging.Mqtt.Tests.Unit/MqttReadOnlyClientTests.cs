@@ -30,7 +30,7 @@ public class MqttReadOnlyClientTests
         }
     }
 
-    //[Fact]
+    [Fact]
     public async Task Test8()
     {
         await Task.Delay(100);
@@ -75,6 +75,6 @@ public class MqttReadOnlyClientTests
     [Fact]
     public async Task Test10()
     {
-        await Task.WhenAll(new List<Task> { Test8(), Test9() });
+        await Task.WhenAll(new List<Task> { Test9(), Test8() });
     }
 }
