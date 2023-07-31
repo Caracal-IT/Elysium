@@ -49,7 +49,7 @@ public sealed class MqttSubscription: ISubscription
     public void Dispose()
     {
         _connectionDetails.MqttClient!.ApplicationMessageReceivedAsync -= OnApplicationMessageReceivedAsync;
-        _channel.Writer.Complete();
+        _channel.Writer.TryComplete();
         _connectionDetails.Dispose();
     }
 

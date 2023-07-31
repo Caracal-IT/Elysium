@@ -45,12 +45,15 @@ public class MqttReadOnlyClientTests
 
         _testOutputHelper.WriteLine(request);
         
-        var subscription = await client.PublishCommandAsync(message, responseTopic, CancellationToken.None);
-        await foreach (var m in subscription.Value!.GetNextAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false))
+        var subscriptionResult = await client.PublishCommandAsync(message, responseTopic, CancellationToken.None).ConfigureAwait(false);
+        using var subscription = subscriptionResult.Value!;
+        await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false))
         {
             result = Encoding.UTF8.GetString(m.Value.Payload);
             break;
         }
+        
+        
         
         _testOutputHelper.WriteLine(result);
 
