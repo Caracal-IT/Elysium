@@ -25,7 +25,7 @@ public class MqttReadOnlyClientTests
         var b = "";
         if (subscription.Value != null)
         {
-            await foreach (var m in subscription.Value.GetNextAsync(TimeSpan.FromSeconds(5), CancellationToken.None).ConfigureAwait(false))
+            await foreach (var m in subscription.Value.GetNextAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false))
                 b += Encoding.UTF8.GetString(m.Value.Payload);
         }
     }
@@ -46,7 +46,7 @@ public class MqttReadOnlyClientTests
         _testOutputHelper.WriteLine(request);
         
         var subscription = await client.PublishCommandAsync(message, responseTopic, CancellationToken.None);
-        await foreach (var m in subscription.Value!.GetNextAsync(TimeSpan.FromSeconds(5), CancellationToken.None).ConfigureAwait(false))
+        await foreach (var m in subscription.Value!.GetNextAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false))
         {
             result = Encoding.UTF8.GetString(m.Value.Payload);
             break;
@@ -66,7 +66,7 @@ public class MqttReadOnlyClientTests
         var topic = new Topic { Path = $"test/command" };
         var subscription = await readOnlyClient.SubscribeAsync(topic);
         
-        await foreach (var m in subscription.Value!.GetNextAsync(TimeSpan.FromSeconds(50), CancellationToken.None).ConfigureAwait(false))
+        await foreach (var m in subscription.Value!.GetNextAsync(TimeSpan.FromSeconds(50)).ConfigureAwait(false))
         {
             var topic2 = m.Value!.ResponseTopic??new Topic{Path = "Unknown"};
             var message = new Message { Topic = topic2, Payload = Encoding.UTF8.GetBytes($"Version {Random.Shared.Next(1, 500)}") };

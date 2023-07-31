@@ -7,6 +7,7 @@ public sealed class MqttClient: IClient
     private readonly MqttConnection _connection;
     private readonly MqttReadOnlyClient _readOnlyClient;
     private readonly MqttWriteOnlyClient _writeOnlyClient;
+    private ISubscription? _subscription;
 
     public MqttClient(MqttConnection connection)
     {
@@ -26,11 +27,20 @@ public sealed class MqttClient: IClient
     {
         var command  = message with{ ResponseTopic = responseTopic with{ Retain = false } };
         await PublishAsync(command, cancellationToken).ConfigureAwait(false);
-        return await SubscribeAsync(responseTopic,  cancellationToken).ConfigureAwait(false);
+        
+        var result = await SubscribeAsync(responseTopic, cancellationToken).ConfigureAwait(false);
+        
+        if (result.IsFaulted)
+            return result;
+        
+        _subscription = result.Value!;
+        
+        return new Result<ISubscription>(_subscription);
     }
 
     public void Dispose()
     {
+        _subscription?.Dispose();
         _connection.Dispose();
         _readOnlyClient.Dispose();
         _writeOnlyClient.Dispose();

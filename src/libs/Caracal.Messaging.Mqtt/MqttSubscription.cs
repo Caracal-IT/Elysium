@@ -11,43 +11,47 @@ public sealed class MqttSubscription: ISubscription
 {
     private readonly MqttConnectionDetails _connectionDetails;
     private readonly Topic _topic;
+    private readonly Channel<MqttApplicationMessageReceivedEventArgs> _channel;
+    private readonly CancellationToken _cancellationToken;
     
     private Exception? _lastException;
     
-    
     public Exception? LastException => _lastException;
 
-    public MqttSubscription(MqttConnectionDetails connectionDetails, Topic topic)
+    public MqttSubscription(MqttConnectionDetails connectionDetails, Topic topic, CancellationToken cancellationToken = default)
     {
         _connectionDetails = connectionDetails;
         _topic = topic;
+        _cancellationToken = cancellationToken;
+        
+        _connectionDetails.MqttClient!.ApplicationMessageReceivedAsync += OnApplicationMessageReceivedAsync;
+        _channel = Channel.CreateUnbounded<MqttApplicationMessageReceivedEventArgs>();
     }
 
-    public async IAsyncEnumerable<Result<Message>> GetNextAsync(TimeSpan timeoutDuration, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    private async Task OnApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs arg) => 
+        await _channel.Writer.WriteAsync(arg, _cancellationToken);
+
+    public async IAsyncEnumerable<Result<Message>> GetNextAsync(TimeSpan timeoutDuration)
     {
         await Task.Yield();
-        
-        var channel = Channel.CreateUnbounded<MqttApplicationMessageReceivedEventArgs>();
-
         await SubscribeToTopicsAsync();
 
-        async Task OnApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs args) => await channel.Writer.WriteAsync(args, cancellationToken);
-        _connectionDetails.MqttClient!.ApplicationMessageReceivedAsync += OnApplicationMessageReceivedAsync;
-
-        try
-        {
-            await foreach (var message in GetMessagesFromChannelAsync(channel, timeoutDuration, cancellationToken))
-                yield return message;
-        }
-        finally
-        {
-            _connectionDetails.MqttClient!.ApplicationMessageReceivedAsync -= OnApplicationMessageReceivedAsync;
-            channel.Writer.Complete();
-        }
+        await foreach (var message in GetMessagesFromChannelAsync(_channel, timeoutDuration, _cancellationToken))
+            yield return message;
     }
+
+    public async Task UnsubscribeAsync() => 
+        await _connectionDetails.MqttClient!.UnsubscribeAsync(new List<string>{_topic.Path});
+
+    public IAsyncEnumerable<Result<Message>> GetNextAsync() => 
+        GetNextAsync(TimeSpan.FromDays(370));
     
-    public IAsyncEnumerable<Result<Message>> GetNextAsync(CancellationToken cancellationToken = default) => 
-        GetNextAsync(TimeSpan.FromDays(370), cancellationToken);
+    public void Dispose()
+    {
+        _connectionDetails.MqttClient!.ApplicationMessageReceivedAsync -= OnApplicationMessageReceivedAsync;
+        _channel.Writer.Complete();
+        _connectionDetails.Dispose();
+    }
 
     private async Task SubscribeToTopicsAsync()
     {
@@ -101,6 +105,4 @@ public sealed class MqttSubscription: ISubscription
 
         return await channel.Reader.ReadAsync(cancellationToken).ConfigureAwait(false);
     }
-
-    public void Dispose() => _connectionDetails.Dispose();
 }
