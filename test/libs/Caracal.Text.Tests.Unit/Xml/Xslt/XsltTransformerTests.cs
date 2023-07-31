@@ -4,6 +4,7 @@ using Caracal.Text.Xml.Xslt;
 
 namespace Caracal.Text.Tests.Unit.Xml.Xslt;
 
+[Trait("Category","Unit")]
 public sealed class XsltTransformerTests
 {
     [Fact]

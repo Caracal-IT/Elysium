@@ -3,6 +3,7 @@ using Xunit.Abstractions;
 
 namespace Caracal.Messaging.Mqtt.Tests.Unit;
 
+[Trait("Category","Prototype")]
 public class MqttReadOnlyClientTests
 {
     private readonly ITestOutputHelper _testOutputHelper;

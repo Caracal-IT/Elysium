@@ -1,6 +1,7 @@
 // ReSharper disable InconsistentNaming
 namespace Caracal.Messaging.Mqtt.Tests.Integration;
 
+[Trait("Category","Integration")]
 public sealed class A_Mqtt_Client: IDisposable
 {
     private readonly Message _message;

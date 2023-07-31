@@ -2,6 +2,7 @@
 
 namespace Caracal.Text.Tests.Unit.Xml;
 
+[Trait("Category","Unit")]
 public sealed class XmlExtensionsTests
 {
     [Fact]

@@ -2,6 +2,7 @@ using FluentAssertions;
 
 namespace Caracal.Lang.Tests.Unit;
 
+[Trait("Category","Unit")]
 public sealed class ResultTests
 {
     [Fact]

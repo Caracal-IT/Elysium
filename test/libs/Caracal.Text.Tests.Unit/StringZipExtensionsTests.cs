@@ -1,5 +1,6 @@
 ﻿namespace Caracal.Text.Tests.Unit;
 
+[Trait("Category","Unit")]
 public class StringZipExtensionsTests
 {
     [Fact]

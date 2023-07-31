@@ -2,6 +2,7 @@
 
 namespace Caracal.Text.Tests.Unit.Json;
 
+[Trait("Category","Unit")]
 public sealed class JsonExtensionsTests
 {
     [Fact]
