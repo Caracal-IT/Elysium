@@ -67,7 +67,7 @@ public class MqttReadOnlyClientTests
         using var readOnlyClient = new MqttReadOnlyClient(connection);
 
         var topic = new Topic { Path = $"test/command" };
-        var subscription = await readOnlyClient.SubscribeAsync(topic);
+        var subscription = await readOnlyClient.SubscribeAsync(topic).ConfigureAwait(false);
         
         await foreach (var m in subscription.Value!.GetNextAsync(TimeSpan.FromSeconds(50)).ConfigureAwait(false))
         {
