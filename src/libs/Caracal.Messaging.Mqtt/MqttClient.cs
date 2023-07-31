@@ -26,9 +26,9 @@ public sealed class MqttClient: IClient
     public async Task<Result<ISubscription>> PublishCommandAsync(Message message, Topic responseTopic, CancellationToken cancellationToken = default)
     {
         var command  = message with{ ResponseTopic = responseTopic with{ Retain = false } };
-        await PublishAsync(command, cancellationToken).ConfigureAwait(false);
-        
         var result = await SubscribeAsync(responseTopic, cancellationToken).ConfigureAwait(false);
+        await Task.Delay(100, cancellationToken);
+        await PublishAsync(command, cancellationToken).ConfigureAwait(false);
         
         if (result.IsFaulted)
             return result;
