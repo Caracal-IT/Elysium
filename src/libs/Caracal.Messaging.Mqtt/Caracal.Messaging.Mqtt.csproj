@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="Caracal.Messaging.Mqtt.Tests.Unit" />
+        <InternalsVisibleTo Include="Caracal.Messaging.Mqtt.Tests.Integration" />
     </ItemGroup>
 
     <ItemGroup>
