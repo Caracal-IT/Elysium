@@ -48,7 +48,7 @@ public sealed class A_Mqtt_Client: IDisposable
     }
 
     [Fact(Timeout = 5000)]
-    public async Task Should_Execute_Command_To_A_Topic()
+    public async Task Should_Execute_A_Command_To_A_Topic()
     {
         // Arrange
         var requestMessage = $"Request {Random.Shared.Next(1, 500)}";
