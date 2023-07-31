@@ -20,6 +20,7 @@ public sealed class MqttReadOnlyClient : IReadOnlyClient
 
         var subscription = new MqttSubscription(mqttConnDetails, topic, cancellationToken);
         await subscription.SubscribeToTopicsAsync().ConfigureAwait(false);
+        await Task.Delay(100, cancellationToken);
 
         return new Result<ISubscription>(subscription);
     }

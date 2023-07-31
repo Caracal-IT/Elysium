@@ -31,7 +31,6 @@ public sealed class A_Mqtt_Client: IDisposable
         
         //Act
         var subscriptionResult = await _sut.SubscribeAsync(_topic, _cancellationToken).ConfigureAwait(false);
-        await Task.Delay(100, _cancellationToken).ConfigureAwait(false); 
         await _sut.PublishAsync(_message, _cancellationToken).ConfigureAwait(false);
         using var subscription = subscriptionResult.Value!;
 
