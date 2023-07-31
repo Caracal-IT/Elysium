@@ -1,4 +1,7 @@
 // ReSharper disable InconsistentNaming
+
+using System.Diagnostics.CodeAnalysis;
+
 namespace Caracal.Messaging.Mqtt.Tests.Integration;
 
 [Trait("Category","Integration")]
@@ -58,41 +61,45 @@ public sealed class A_Mqtt_Client: IDisposable
         
         // Assert
         response.Should().Be($"Response {requestMessage}");
-        
-        async Task<string> PublishCommandAsync(string msgString)
-        {
-            await Task.Delay(200, _cancellationToken).ConfigureAwait(false);
-            var topic = new Topic { Path = $"test/command" };
-            var responseTopic = new Topic { Path = $"test/response" };
+    }
+    
+    public void Dispose() => _sut.Dispose();
 
-            var message = new Message { Topic = topic, Payload = msgString.GetBytes()};
-            var subscriptionResult = await _sut.PublishCommandAsync(message, responseTopic, CancellationToken.None).ConfigureAwait(false);
-            using var subscription = subscriptionResult.Value!;
-            await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false))
-            {
-                return m.Value.Payload.GetString();
-            }
-            
-            return string.Empty;
-        }
-        
-        async Task PublishResponseAsync()
-        {
-            var topic = new Topic { Path = $"test/command" };
-            var responseTopic = new Topic { Path = $"test/response" };
+    [ExcludeFromCodeCoverage]
+    private async Task PublishResponseAsync()
+    {
+        await Task.Yield();
+        var topic = new Topic { Path = $"test/command" };
+        var responseTopic = new Topic { Path = "test/response" };
 
-            var subscriptionResult = await _sut.SubscribeAsync(topic, _cancellationToken).ConfigureAwait(false);
-            using var subscription = subscriptionResult.Value!;
-            
-            await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false))
-            {
-                var responseMsg = $"Response {m.Value.Payload.GetString()}";
-                var message = new Message { Topic = responseTopic, Payload = responseMsg.GetBytes() };
-                await _sut.PublishAsync(message, _cancellationToken).ConfigureAwait(false);
-                break;
-            }
+        var subscriptionResult = await _sut.SubscribeAsync(topic, _cancellationToken).ConfigureAwait(false);
+        using var subscription = subscriptionResult.Value!;
+
+        var responseMsg = string.Empty;
+        await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false))
+        {
+            responseMsg = $"Response {m.Value.Payload.GetString()}";
+            break;
         }
+
+        var message = new Message { Topic = responseTopic, Payload = responseMsg.GetBytes() };
+        await _sut.PublishAsync(message, _cancellationToken).ConfigureAwait(false);
     }
 
-    public void Dispose() => _sut.Dispose();
+    [ExcludeFromCodeCoverage]
+    private async Task<string> PublishCommandAsync(string msgString)
+    {
+        await Task.Delay(500, _cancellationToken).ConfigureAwait(false);
+        var topic = new Topic { Path = $"test/command" };
+        var responseTopic = new Topic { Path = "test/response" };
+
+        var message = new Message { Topic = topic, Payload = msgString.GetBytes() };
+        var subscriptionResult =
+            await _sut.PublishCommandAsync(message, responseTopic, CancellationToken.None).ConfigureAwait(false);
+        using var subscription = subscriptionResult.Value!;
+        await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false))
+            return m.Value.Payload.GetString();
+
+        return string.Empty;
+    }
 }
