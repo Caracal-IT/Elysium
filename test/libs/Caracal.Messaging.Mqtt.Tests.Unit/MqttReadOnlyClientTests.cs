@@ -3,7 +3,7 @@ using Xunit.Abstractions;
 
 namespace Caracal.Messaging.Mqtt.Tests.Unit;
 
-[Trait("Category","Prototype")]
+[Trait("Category","Unit")]
 public class MqttReadOnlyClientTests
 {
     private readonly ITestOutputHelper _testOutputHelper;
@@ -11,74 +11,5 @@ public class MqttReadOnlyClientTests
     public MqttReadOnlyClientTests(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
-    }
-
-    [Fact]
-    public async Task Test7()
-    {
-        await Task.Delay(100);
-        await using var connection = new MqttConnection();
-        using var client = new MqttReadOnlyClient(connection);
-        
-        var topic = new Topic { Path = "test/1" };
-        var subscription = await client.SubscribeAsync(topic, CancellationToken.None);
-        
-        if (subscription.Value != null)
-        {
-            await foreach (var m in subscription.Value.GetNextAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false))
-                _testOutputHelper.WriteLine(Encoding.UTF8.GetString(m.Value.Payload));
-        }
-    }
-
-    [Fact]
-    public async Task Test8()
-    {
-        await Task.Delay(100);
-        var result = string.Empty;
-        await using var connection = new MqttConnection();
-        using var client = new MqttClient(connection);
-
-        var topic = new Topic { Path = $"test/command" };
-        var responseTopic = new Topic { Path = $"test/response" };
-        var request = $"Request {Random.Shared.Next(1, 500)}";
-        var message = new Message { Topic = topic, Payload = Encoding.UTF8.GetBytes(request)};
-
-        _testOutputHelper.WriteLine(request);
-        
-        var subscriptionResult = await client.PublishCommandAsync(message, responseTopic, CancellationToken.None).ConfigureAwait(false);
-        using var subscription = subscriptionResult.Value!;
-        await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false))
-        {
-            result = Encoding.UTF8.GetString(m.Value.Payload);
-            break;
-        }
-        
-        _testOutputHelper.WriteLine(result);
-
-        result.Should().Contain("Version");
-    }
-
-    private async Task Test9()
-    {
-        await using var connection = new MqttConnection();
-        using var writeOnlyClient = new MqttWriteOnlyClient(connection);
-        using var readOnlyClient = new MqttReadOnlyClient(connection);
-
-        var topic = new Topic { Path = $"test/command" };
-        var subscription = await readOnlyClient.SubscribeAsync(topic).ConfigureAwait(false);
-        
-        await foreach (var m in subscription.Value!.GetNextAsync(TimeSpan.FromSeconds(50)).ConfigureAwait(false))
-        {
-            var topic2 = m.Value!.ResponseTopic??new Topic{Path = "Unknown"};
-            var message = new Message { Topic = topic2, Payload = Encoding.UTF8.GetBytes($"Version {Random.Shared.Next(1, 500)}") };
-            await writeOnlyClient.PublishAsync(message);
-            break;
-        }
-    }
-
-    [Fact]
-    public async Task Test10()
-    {
-        await Task.WhenAll(new List<Task> { Test9(), Test8() });
     }
 }
