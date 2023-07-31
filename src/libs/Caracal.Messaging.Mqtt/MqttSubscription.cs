@@ -18,13 +18,12 @@ public sealed class MqttSubscription: ISubscription
     
     public Exception? LastException => _lastException;
 
-    public MqttSubscription(MqttConnectionDetails connectionDetails, Topic topic, CancellationToken cancellationToken = default)
+    internal MqttSubscription(MqttConnectionDetails connectionDetails, Topic topic, CancellationToken cancellationToken = default)
     {
         _connectionDetails = connectionDetails;
         _topic = topic;
         _cancellationToken = cancellationToken;
-        
-        _connectionDetails.MqttClient!.ApplicationMessageReceivedAsync += OnApplicationMessageReceivedAsync;
+        ;
         _channel = Channel.CreateUnbounded<MqttApplicationMessageReceivedEventArgs>();
     }
 
@@ -33,15 +32,15 @@ public sealed class MqttSubscription: ISubscription
 
     public async IAsyncEnumerable<Result<Message>> GetNextAsync(TimeSpan timeoutDuration)
     {
-        await Task.Yield();
-        await SubscribeToTopicsAsync();
-
         await foreach (var message in GetMessagesFromChannelAsync(_channel, timeoutDuration, _cancellationToken))
             yield return message;
     }
 
-    public async Task UnsubscribeAsync() => 
-        await _connectionDetails.MqttClient!.UnsubscribeAsync(new List<string>{_topic.Path});
+    public async Task UnsubscribeAsync()
+    {
+        _connectionDetails.MqttClient!.ApplicationMessageReceivedAsync -= OnApplicationMessageReceivedAsync;
+        await _connectionDetails.MqttClient!.UnsubscribeAsync(new List<string> { _topic.Path });
+    }
 
     public IAsyncEnumerable<Result<Message>> GetNextAsync() => 
         GetNextAsync(TimeSpan.FromDays(370));
@@ -53,8 +52,9 @@ public sealed class MqttSubscription: ISubscription
         _connectionDetails.Dispose();
     }
 
-    private async Task SubscribeToTopicsAsync()
+    internal async Task SubscribeToTopicsAsync()
     {
+        _connectionDetails.MqttClient!.ApplicationMessageReceivedAsync += OnApplicationMessageReceivedAsync;
         await _connectionDetails.MqttClient!.SubscribeAsync(new List<MqttTopicFilter>(new[]
         {
             new MqttTopicFilter { Topic = _topic.Path, QualityOfServiceLevel = (MqttQualityOfServiceLevel)_topic.QualityOfServiceLevel },

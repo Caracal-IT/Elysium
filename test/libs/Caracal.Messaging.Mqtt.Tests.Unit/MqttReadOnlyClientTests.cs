@@ -58,7 +58,7 @@ public class MqttReadOnlyClientTests
         result.Should().Contain("Version");
     }
 
-    public async Task Test9()
+    private async Task Test9()
     {
         await using var connection = new MqttConnection();
         using var writeOnlyClient = new MqttWriteOnlyClient(connection);
