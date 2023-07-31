@@ -56,7 +56,7 @@ public sealed class A_Mqtt_Client: IDisposable
         var commandTask = PublishCommandAsync(requestMessage);
         
         // Act
-        await Task.WhenAll(responseTask, commandTask).ConfigureAwait(false);
+        await Task.WhenAll(commandTask, responseTask).ConfigureAwait(false);
         var response = await commandTask.ConfigureAwait(false);
         
         // Assert
@@ -84,12 +84,16 @@ public sealed class A_Mqtt_Client: IDisposable
 
         var message = new Message { Topic = responseTopic, Payload = responseMsg.GetBytes() };
         await _sut.PublishAsync(message, _cancellationToken).ConfigureAwait(false);
+        
+        while (_connection.Client.PendingApplicationMessagesCount > 0)
+            await Task.Delay(100, CancellationToken.None).ConfigureAwait(false);
     }
 
     [ExcludeFromCodeCoverage]
     private async Task<string> PublishCommandAsync(string msgString)
     {
-        await Task.Delay(500, _cancellationToken).ConfigureAwait(false);
+        await Task.Delay(200, _cancellationToken).ConfigureAwait(false);
+        
         var topic = new Topic { Path = $"test/command" };
         var responseTopic = new Topic { Path = "test/response" };
 
@@ -99,7 +103,7 @@ public sealed class A_Mqtt_Client: IDisposable
         using var subscription = subscriptionResult.Value!;
         await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false))
             return m.Value.Payload.GetString();
-
+        
         return string.Empty;
     }
 }
