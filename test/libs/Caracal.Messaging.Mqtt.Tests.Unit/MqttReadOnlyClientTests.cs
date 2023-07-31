@@ -19,14 +19,13 @@ public class MqttReadOnlyClientTests
         await using var connection = new MqttConnection();
         using var client = new MqttReadOnlyClient(connection);
         
-        var topic = new Topic { Path = $"test/1" };
+        var topic = new Topic { Path = "test/1" };
         var subscription = await client.SubscribeAsync(topic, CancellationToken.None);
-
-        var b = "";
+        
         if (subscription.Value != null)
         {
             await foreach (var m in subscription.Value.GetNextAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false))
-                b += Encoding.UTF8.GetString(m.Value.Payload);
+                _testOutputHelper.WriteLine(Encoding.UTF8.GetString(m.Value.Payload));
         }
     }
 
@@ -52,8 +51,6 @@ public class MqttReadOnlyClientTests
             result = Encoding.UTF8.GetString(m.Value.Payload);
             break;
         }
-        
-        
         
         _testOutputHelper.WriteLine(result);
 
