@@ -1,6 +1,4 @@
 // ReSharper disable InconsistentNaming
-using Caracal.Messaging.Mqtt.Tests.Integration.Fixtures;
-
 namespace Caracal.Messaging.Mqtt.Tests.Integration;
 
 [Trait("Category","Integration")]
