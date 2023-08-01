@@ -1,4 +1,5 @@
 version: "3.9"
+name: "elysium"
 services:
   hivemq-server:
     image: hivemq/hivemq-ce:latest
