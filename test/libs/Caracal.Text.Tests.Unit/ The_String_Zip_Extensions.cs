@@ -1,10 +1,11 @@
-﻿namespace Caracal.Text.Tests.Unit;
+﻿// ReSharper disable InconsistentNaming
+namespace Caracal.Text.Tests.Unit;
 
 [Trait("Category","Unit")]
-public class StringZipExtensionsTests
+public sealed class The_String_Zip_Extensions
 {
     [Fact]
-    public void AString_ShouldBeCompressedAndDecompressed()
+    public void Should_Compress_A_String_To_Bytes_And_Then_Decompress_The_Bytes_To_The_Original_String()
     {
         const string mockString = "Test Compress And Decompress";
         var compressedBuffer = mockString.Compress();
@@ -15,7 +16,7 @@ public class StringZipExtensionsTests
     }
     
     [Fact]
-    public void AStringShouldBeCompressedToBase64AndDecompressedFromBase64()
+    public void  Should_Compress_A_String_To_A_Base64_String_And_Then_Decompress_The_Base64_String_To_The_Original_String()
     {
         const string mockString = "Test Compress And Decompress";
         var compressedBuffer = mockString.CompressToBase64();

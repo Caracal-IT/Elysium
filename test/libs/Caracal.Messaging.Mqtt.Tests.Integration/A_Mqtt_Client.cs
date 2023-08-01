@@ -1,7 +1,4 @@
 // ReSharper disable InconsistentNaming
-
-using System.Diagnostics.CodeAnalysis;
-
 namespace Caracal.Messaging.Mqtt.Tests.Integration;
 
 [Trait("Category","Integration")]
@@ -48,7 +45,7 @@ public sealed class A_Mqtt_Client: IDisposable
     }
 
     [Fact(Timeout = 5000)]
-    public async Task Should_Execute_A_Command_To_A_Topic()
+    public async Task Should_Publish_A_Command_To_A_Topic_And_Handle_The_Response()
     {
         // Arrange
         var requestMessage = $"Request {Random.Shared.Next(1, 500)}";

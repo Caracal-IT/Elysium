@@ -1,4 +1,3 @@
-using System.Text;
 using Xunit.Abstractions;
 
 namespace Caracal.Messaging.Mqtt.Tests.Unit;
