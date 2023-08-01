@@ -26,7 +26,7 @@ public class TelemetryMessageConsumer: IConsumer<TelemetryMessage>
         {
             Topic = new Topic
             {
-                Path = $"Device/{Guid.NewGuid()}",
+                Path = $"Device/{Random.Shared.Next(1000, 1020)}",
                 QualityOfServiceLevel = 1,
                 Retain = true
             },
