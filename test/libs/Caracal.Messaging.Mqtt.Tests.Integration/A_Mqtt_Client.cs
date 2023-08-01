@@ -7,7 +7,6 @@ namespace Caracal.Messaging.Mqtt.Tests.Integration;
 [Collection("Mqtt collection")]
 public sealed class A_Mqtt_Client: IDisposable
 {
-    private readonly MqttFixture _fixture;
     private readonly Message _message;
     private readonly MqttConnection _connection = new ();
     private readonly Topic _topic = new () { Path = "test/integration/test1" };
@@ -15,10 +14,8 @@ public sealed class A_Mqtt_Client: IDisposable
 
     private readonly MqttClient _sut;
 
-    public A_Mqtt_Client(MqttFixture fixture)
+    public A_Mqtt_Client()
     {
-        _fixture = fixture;
-        
         _message = new Message
         {
             Payload = _originalMessage.GetBytes(),
