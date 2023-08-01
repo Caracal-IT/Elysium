@@ -1,13 +1,13 @@
 // ReSharper disable InconsistentNaming
-//using Caracal.Messaging.Mqtt.Tests.Integration.Fixtures;
+using Caracal.Messaging.Mqtt.Tests.Integration.Fixtures;
 
 namespace Caracal.Messaging.Mqtt.Tests.Integration;
 
 [Trait("Category","Integration")]
-//[Collection("Mqtt collection")]
+[Collection("Mqtt collection")]
 public sealed class A_Mqtt_Client: IDisposable
 {
-    //private readonly MqttFixture _fixture;
+    private readonly MqttFixture _fixture;
     private readonly Message _message;
     private readonly MqttConnection _connection = new ();
     private readonly Topic _topic = new () { Path = "test/integration/test1" };
@@ -15,11 +15,10 @@ public sealed class A_Mqtt_Client: IDisposable
 
     private readonly MqttClient _sut;
 
-    //public A_Mqtt_Client(MqttFixture fixture)
-    //{
-        //_fixture = fixture;
-    public A_Mqtt_Client()
-    {    
+    public A_Mqtt_Client(MqttFixture fixture)
+    {
+        _fixture = fixture;
+        
         _message = new Message
         {
             Payload = _originalMessage.GetBytes(),
@@ -29,12 +28,12 @@ public sealed class A_Mqtt_Client: IDisposable
         _sut = new MqttClient(_connection);
     }
     
-    [Fact(Timeout = 10000)]
+    [Fact(Timeout = 5000)]
     public async Task Should_Subscribe_And_Publish_To_A_Topic()
     {
         // Arrange
         var messageFromSubscription = string.Empty;
-        var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(20)).Token;
+        var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
         
         //Act
         var subscriptionResult = await _sut.SubscribeAsync(_topic, cancellationToken).ConfigureAwait(false);
@@ -51,7 +50,7 @@ public sealed class A_Mqtt_Client: IDisposable
         messageFromSubscription.Should().Be(_originalMessage);
     }
 
-    [Fact(Timeout = 10000)]
+    [Fact(Timeout = 5000)]
     public async Task Should_Publish_A_Command_To_A_Topic_And_Handle_The_Response()
     {
         // Arrange
@@ -75,13 +74,13 @@ public sealed class A_Mqtt_Client: IDisposable
         await Task.Yield();
         var topic = new Topic { Path = $"test/command" };
         var responseTopic = new Topic { Path = "test/response" };
-        var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(20)).Token;
+        var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
 
         var subscriptionResult = await _sut.SubscribeAsync(topic, cancellationToken).ConfigureAwait(false);
         using var subscription = subscriptionResult.Value!;
 
         var responseMsg = string.Empty;
-        await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false))
+        await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(1)).ConfigureAwait(false))
         {
             responseMsg = $"Response {m.Value.Payload.GetString()}";
             break;
@@ -97,7 +96,7 @@ public sealed class A_Mqtt_Client: IDisposable
     [ExcludeFromCodeCoverage]
     private async Task<string> PublishCommandAsync(string msgString)
     {
-        var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(20)).Token;
+        var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
         await Task.Delay(200, cancellationToken).ConfigureAwait(false);
         
         var topic = new Topic { Path = $"test/command" };
@@ -107,7 +106,7 @@ public sealed class A_Mqtt_Client: IDisposable
         var subscriptionResult =
             await _sut.PublishCommandAsync(message, responseTopic, CancellationToken.None).ConfigureAwait(false);
         using var subscription = subscriptionResult.Value!;
-        await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false))
+        await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(1)).ConfigureAwait(false))
             return m.Value.Payload.GetString();
         
         return string.Empty;

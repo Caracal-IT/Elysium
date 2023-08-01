@@ -1,4 +1,3 @@
-/*
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 
@@ -21,8 +20,17 @@ public class MqttFixture: IAsyncLifetime
             })
             .Build();
 
-        await _container.StartAsync().ConfigureAwait(false);
-        await Task.Delay(5000).ConfigureAwait(false);
+       await _container.StartAsync().ConfigureAwait(false);
+
+       string output;
+       string error;
+       
+       do
+       {
+           (output, error) = await _container.GetLogsAsync().ConfigureAwait(false);
+
+           await Task.Delay(100).ConfigureAwait(false);
+       } while (string.IsNullOrWhiteSpace(error) && !output.Contains("Started HiveMQ", StringComparison.InvariantCultureIgnoreCase));
     }
 
     public async Task DisposeAsync()
@@ -39,4 +47,3 @@ public class MqttCollection : ICollectionFixture<MqttFixture>
     // to be the place to apply [CollectionDefinition] and all the
     // ICollectionFixture<> interfaces.
 }
-*/
