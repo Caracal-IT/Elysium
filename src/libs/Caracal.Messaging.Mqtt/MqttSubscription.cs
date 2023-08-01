@@ -23,7 +23,7 @@ public sealed class MqttSubscription: ISubscription
         _connectionDetails = connectionDetails;
         _topic = topic;
         _cancellationToken = cancellationToken;
-        ;
+        
         _channel = Channel.CreateUnbounded<MqttApplicationMessageReceivedEventArgs>();
     }
 
