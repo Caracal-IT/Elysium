@@ -1,5 +1,5 @@
 // ReSharper disable InconsistentNaming
-using Caracal.Messaging.Mqtt.Tests.Integration.Fixtures;
+//using Caracal.Messaging.Mqtt.Tests.Integration.Fixtures;
 
 namespace Caracal.Messaging.Mqtt.Tests.Integration;
 
@@ -18,7 +18,7 @@ public sealed class A_Mqtt_Client: IDisposable
     //public A_Mqtt_Client(MqttFixture fixture)
     //{
         //_fixture = fixture;
-    public A_Mqtt_Client(MqttFixture fixture)
+    public A_Mqtt_Client()
     {    
         _message = new Message
         {
