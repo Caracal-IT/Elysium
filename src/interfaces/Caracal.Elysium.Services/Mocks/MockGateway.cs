@@ -4,7 +4,7 @@ using Caracal.Lang;
 
 namespace Caracal.Elysium.Services.Mocks;
 
-public class MockGateway : IGateway
+public sealed class MockGateway : IGateway
 {
     public Task<Result<Response>> ExecuteAsync(CancellationToken cancellationToken = default)
     {

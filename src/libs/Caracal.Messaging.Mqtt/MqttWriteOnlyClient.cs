@@ -18,7 +18,7 @@ public sealed class MqttWriteOnlyClient: IWriteOnlyClient
                                                        .ConfigureAwait(false);
 
         if (conn.IsSuccess)
-            return await OnSuccess(message, conn.Value!);
+            return await OnSuccess(message, conn.Value!).ConfigureAwait(false);
 
         return conn.Exception!;
     }

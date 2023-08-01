@@ -9,6 +9,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\libs\Caracal.IOT\Caracal.IOT.csproj" />
       <ProjectReference Include="..\..\libs\Caracal.Messaging\Caracal.Messaging.csproj" />
+      <ProjectReference Include="..\..\libs\Caracal.Text\Caracal.Text.csproj" />
     </ItemGroup>
 
     <ItemGroup>

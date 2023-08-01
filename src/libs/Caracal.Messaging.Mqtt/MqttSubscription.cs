@@ -58,7 +58,7 @@ public sealed class MqttSubscription: ISubscription
         await _connectionDetails.MqttClient!.SubscribeAsync(new List<MqttTopicFilter>(new[]
         {
             new MqttTopicFilter { Topic = _topic.Path, QualityOfServiceLevel = (MqttQualityOfServiceLevel)_topic.QualityOfServiceLevel },
-        }));
+        })).ConfigureAwait(false);
     }
 
     private async IAsyncEnumerable<Result<Message>> GetMessagesFromChannelAsync(Channel<MqttApplicationMessageReceivedEventArgs> channel, TimeSpan timeoutDuration, [EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -70,7 +70,7 @@ public sealed class MqttSubscription: ISubscription
             MqttApplicationMessageReceivedEventArgs? item;
             try
             {
-                item = await GetMessageFromChannelAsync(channel, combinedCancellationTokenSource.Token);
+                item = await GetMessageFromChannelAsync(channel, combinedCancellationTokenSource.Token).ConfigureAwait(false);
                 if (item is null) break;
             }
             catch (TaskCanceledException ex) { _lastException = ex; break; }

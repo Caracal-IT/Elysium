@@ -2,6 +2,7 @@ using System.Text;
 using Caracal.Elysium.IOT.Application.Messages;
 using Caracal.IOT;
 using Caracal.Lang;
+using Caracal.Text;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using Response = Caracal.IOT.Response;
@@ -28,9 +29,9 @@ public class GatewayProducer: IGatewayProducer
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            await HandleResponse(await _gateway.ExecuteAsync(cancellationToken), cancellationToken);
+            await HandleResponse(await _gateway.ExecuteAsync(cancellationToken), cancellationToken).ConfigureAwait(false);
 
-            await Task.Delay(3000, cancellationToken);
+            await Task.Delay(3000, cancellationToken).ConfigureAwait(false);
         }
     }
     
@@ -43,7 +44,7 @@ public class GatewayProducer: IGatewayProducer
                     Payload = Encoding.UTF8.GetString(response.Payload)
                 };
                 
-                await  _bus.Publish(msg, cancellationToken);
+                await  _bus.Publish(msg, cancellationToken).ConfigureAwait(false);
             }, async error =>
             {
                 var msg = new TelemetryErrorMessage
@@ -51,8 +52,8 @@ public class GatewayProducer: IGatewayProducer
                     Payload = error.Message
                 };
                 
-                await  _bus.Publish(msg, cancellationToken);
-            });
+                await  _bus.Publish(msg, cancellationToken).ConfigureAwait(false);
+            }).ConfigureAwait(false);
     }
 }
 
@@ -68,7 +69,7 @@ public sealed class GatewayProducerWithLogger: GatewayProducer
         if(_logger.IsEnabled(LogLevel.Information))
             _logger.LogInformation("Starting Gateway Producer");
         
-        await base.ExecuteAsync(cancellationToken);
+        await base.ExecuteAsync(cancellationToken).ConfigureAwait(false);
 
         if(_logger.IsEnabled(LogLevel.Information))
             _logger.LogInformation("Gateway Producer stopped");
@@ -79,11 +80,11 @@ public sealed class GatewayProducerWithLogger: GatewayProducer
         if (_logger.IsEnabled(LogLevel.Information))
         {
             result.Match(
-                response => _logger.LogInformation("Gateway response: {Response}", Encoding.UTF8.GetString(response.Payload)),
+                response => _logger.LogInformation("Gateway response: {Response}", response.Payload.GetString()),
                 error => _logger.LogError("Gateway error: {Error}", error.Message)
             );
         }
 
-        await base.HandleResponse(result, cancellationToken);
+        await base.HandleResponse(result, cancellationToken).ConfigureAwait(false);
     }
 }

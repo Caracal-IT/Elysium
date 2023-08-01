@@ -1,12 +1,13 @@
 using System.Text;
 using Caracal.Elysium.IOT.Application.Messages;
 using Caracal.Messaging;
+using Caracal.Text;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
 namespace Caracal.Elysium.IOT.Application.Consumers;
 
-public class TelemetryMessageConsumer: IConsumer<TelemetryMessage>
+public sealed class TelemetryMessageConsumer: IConsumer<TelemetryMessage>
 {
     private readonly ILogger<TelemetryMessageConsumer> _logger;
     private readonly IWriteOnlyClient _client;
@@ -30,9 +31,9 @@ public class TelemetryMessageConsumer: IConsumer<TelemetryMessage>
                 QualityOfServiceLevel = 1,
                 Retain = true
             },
-            Payload = Encoding.UTF8.GetBytes(context.Message.Payload)
+            Payload = context.Message.Payload.GetBytes()
         };
         
-        await _client.PublishAsync(message, context.CancellationToken);
+        await _client.PublishAsync(message, context.CancellationToken).ConfigureAwait(false);
     }
 }

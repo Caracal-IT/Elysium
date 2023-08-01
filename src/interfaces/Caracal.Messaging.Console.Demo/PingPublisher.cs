@@ -24,10 +24,10 @@ public class PingPublisher: BackgroundService
             if (keyPressed.Key != ConsoleKey.Escape)
             {
                 _logger.LogInformation("Pressed {Button}", keyPressed.Key.ToString());
-                await _bus.Publish(new Ping(keyPressed.Key.ToString()), stoppingToken);
+                await _bus.Publish(new Ping(keyPressed.Key.ToString()), stoppingToken).ConfigureAwait(false);
             }
 
-            await Task.Delay(200, stoppingToken);
+            await Task.Delay(200, stoppingToken).ConfigureAwait(false);
         }
     }
 }

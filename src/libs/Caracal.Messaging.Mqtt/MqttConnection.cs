@@ -60,7 +60,7 @@ public sealed class MqttConnection: IConnection, IAsyncDisposable
         var counter = 0;
         while (counter < 20 && Client.PendingApplicationMessagesCount > 0)
         {
-            await Task.Delay(100);
+            await Task.Delay(100).ConfigureAwait(false);
             counter++;
         }
         

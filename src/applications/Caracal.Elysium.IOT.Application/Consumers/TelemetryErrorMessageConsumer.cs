@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Caracal.Elysium.IOT.Application.Consumers;
 
-public class TelemetryErrorMessageConsumer: IConsumer<TelemetryErrorMessage>
+public sealed class TelemetryErrorMessageConsumer: IConsumer<TelemetryErrorMessage>
 {
     private readonly ILogger<TelemetryErrorMessageConsumer> _logger;
 
