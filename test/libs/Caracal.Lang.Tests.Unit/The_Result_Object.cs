@@ -1,12 +1,12 @@
 using FluentAssertions;
-
+// ReSharper disable InconsistentNaming
 namespace Caracal.Lang.Tests.Unit;
 
 [Trait("Category","Unit")]
-public sealed class ResultTests
+public sealed class The_Result_Object
 {
     [Fact]
-    public void ShouldCreateResultWithValue()
+    public void Should_Wrap_The_Value_As_Successful()
     {
         var result = new Result<int>(42);
         
@@ -17,7 +17,7 @@ public sealed class ResultTests
     }
     
     [Fact]
-    public void ShouldCreateResultWithException()
+    public void Should_Wrap_The_Exception_As_A_Faulted()
     {
         var exception = new Exception();
         var result = new Result<int>(exception);
@@ -29,7 +29,7 @@ public sealed class ResultTests
     }
     
     [Fact]
-    public void Match_ShouldCallOnSuccess()
+    public void Should_Match_The_Successful_Result()
     {
         var result = new Result<int>(42).Match(value => value, null!);
 
@@ -37,7 +37,7 @@ public sealed class ResultTests
     }
     
     [Fact]
-    public void Match_ShouldCallOnFaulted()
+    public void  Should_Match_The_Faulted_Result()
     {
         var exception = new Exception();
         var result = new Result<int>(exception).Match(null!, ex =>  ex);
@@ -46,7 +46,7 @@ public sealed class ResultTests
     }
 
     [Fact]
-    public void ImplicitOperator_ShouldCreateResultWithValue()
+    public void Should_Implicit_Wrap_A_Successful_Value()
     {
         Result<int> result = 42;
         
@@ -57,7 +57,7 @@ public sealed class ResultTests
     }
     
     [Fact]
-    public void ImplicitOperator_ShouldCreateResultWithException()
+    public void Should_Implicit_Wrap_An_Exception()
     {
         var exception = new Exception();
         Result<int> result = exception;
