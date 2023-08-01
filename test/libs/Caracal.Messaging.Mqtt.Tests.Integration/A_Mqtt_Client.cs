@@ -8,7 +8,7 @@ namespace Caracal.Messaging.Mqtt.Tests.Integration;
 public sealed class A_Mqtt_Client: IDisposable
 {
     private readonly Message _message;
-    private readonly MqttConnection _connection = new ();
+    private readonly MqttConnection _connection = new (new MqttConnectionString{Port = 1999});
     private readonly Topic _topic = new () { Path = "test/integration/test1" };
     private readonly string _originalMessage = $"Request {Random.Shared.Next(1, 500)}";
 
@@ -100,8 +100,7 @@ public sealed class A_Mqtt_Client: IDisposable
         var responseTopic = new Topic { Path = "test/response" };
 
         var message = new Message { Topic = topic, Payload = msgString.GetBytes() };
-        var subscriptionResult =
-            await _sut.PublishCommandAsync(message, responseTopic, CancellationToken.None).ConfigureAwait(false);
+        var subscriptionResult = await _sut.PublishCommandAsync(message, responseTopic, CancellationToken.None).ConfigureAwait(false);
         using var subscription = subscriptionResult.Value!;
         await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(1)).ConfigureAwait(false))
             return m.Value.Payload.GetString();
