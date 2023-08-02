@@ -1,5 +1,6 @@
 using Caracal.Elysium.IOT.Application.Messages;
 using Caracal.Messaging;
+using Caracal.Text;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
@@ -19,7 +20,7 @@ public sealed class TelemetryMessageConsumer: IConsumer<TelemetryMessage>
     public async Task Consume(ConsumeContext<TelemetryMessage> context)
     {
         if(_logger.IsEnabled(LogLevel.Information))
-            _logger.LogInformation("Telemetry message received: {Payload}", context.Message.Payload);
+            _logger.LogInformation("Telemetry message received: {Payload}", context.Message.Payload.GetString());
         
         var message = new Message
         {
