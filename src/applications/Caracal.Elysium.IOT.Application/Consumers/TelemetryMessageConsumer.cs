@@ -1,6 +1,5 @@
 using Caracal.Elysium.IOT.Application.Messages;
 using Caracal.Messaging;
-using Caracal.Text;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 

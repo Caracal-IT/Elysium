@@ -1,12 +1,6 @@
 // ReSharper disable InconsistentNaming
 
-using Caracal.Lang;
-using Caracal.Text;
-using MQTTnet;
-using MQTTnet.Client;
 using MQTTnet.Extensions.ManagedClient;
-using MQTTnet.Packets;
-using MQTTnet.Protocol;
 using NSubstitute.ExceptionExtensions;
 
 namespace Caracal.Messaging.Mqtt.Tests.Unit;

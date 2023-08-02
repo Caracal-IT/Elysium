@@ -1,4 +1,3 @@
-using System.Text;
 using Caracal.Elysium.IOT.Application.Messages;
 using Caracal.IOT;
 using Caracal.Lang;
