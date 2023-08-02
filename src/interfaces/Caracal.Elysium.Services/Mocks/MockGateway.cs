@@ -1,6 +1,6 @@
-using System.Text;
 using Caracal.IOT;
 using Caracal.Lang;
+using Caracal.Text;
 
 namespace Caracal.Elysium.Services.Mocks;
 
@@ -10,7 +10,7 @@ public sealed class MockGateway : IGateway
     {
         var response = new Response
         {
-            Payload = Encoding.UTF8.GetBytes($"Message {Random.Shared.Next(0, 100)} from {nameof(MockGateway)}")
+            Payload = $"Message {Random.Shared.Next(0, 100)} from {nameof(MockGateway)}".GetBytes()
         };
 
         return Task.FromResult(new Result<Response>(response));

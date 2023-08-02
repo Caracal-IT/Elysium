@@ -1,5 +1,4 @@
 ﻿using System.IO.Compression;
-using System.Text;
 
 namespace Caracal.Text;
 
@@ -7,7 +6,7 @@ public static class StringZipExtensions
 {
     public static byte[] Compress(this string input)
     {
-        var buffer = Encoding.UTF8.GetBytes(input);
+        var buffer = input.GetBytes();
         using var memoryStream = new MemoryStream();
         using var stream = new GZipStream(memoryStream, CompressionMode.Compress);
         stream.Write(buffer, 0, buffer.Length);
@@ -26,7 +25,7 @@ public static class StringZipExtensions
         stream.CopyTo(outputMemoryStream);
         stream.Close();
         
-        return Encoding.UTF8.GetString(outputMemoryStream.ToArray());
+        return outputMemoryStream.ToArray().GetString();
     }
     
     public static string DecompressFromBase64(this string input) => Convert.FromBase64String(input).Decompress();
