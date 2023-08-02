@@ -1,4 +1,3 @@
-using MQTTnet.Client;
 using MQTTnet.Extensions.ManagedClient;
 
 namespace Caracal.Messaging.Mqtt;

@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddSingleton<IGateway, MockGateway>()
     .AddSingleton<IGatewayProducer, GatewayProducerWithLogger>()
-    .AddSingleton<IWriteOnlyClient>(service =>
+    .AddSingleton<IWriteOnlyClient>(_ =>
     {
         var connectionString = new MqttConnectionString();
         var connection = new MqttConnection(connectionString);

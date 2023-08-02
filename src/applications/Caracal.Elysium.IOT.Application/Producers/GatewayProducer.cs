@@ -41,7 +41,7 @@ public class GatewayProducer: IGatewayProducer
             {
                 var msg = new TelemetryMessage
                 {
-                    Payload = Encoding.UTF8.GetString(response.Payload)
+                    Payload = response.Payload
                 };
                 
                 await  _bus.Publish(msg, cancellationToken).ConfigureAwait(false);
@@ -49,7 +49,7 @@ public class GatewayProducer: IGatewayProducer
             {
                 var msg = new TelemetryErrorMessage
                 {
-                    Payload = error.Message
+                    Payload = error.Message.GetBytes()
                 };
                 
                 await  _bus.Publish(msg, cancellationToken).ConfigureAwait(false);

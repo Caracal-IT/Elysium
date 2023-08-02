@@ -1,4 +1,3 @@
-using System.Text;
 using Caracal.Elysium.IOT.Application.Messages;
 using Caracal.Messaging;
 using Caracal.Text;
@@ -31,7 +30,7 @@ public sealed class TelemetryMessageConsumer: IConsumer<TelemetryMessage>
                 QualityOfServiceLevel = 1,
                 Retain = true
             },
-            Payload = context.Message.Payload.GetBytes()
+            Payload = context.Message.Payload
         };
         
         await _client.PublishAsync(message, context.CancellationToken).ConfigureAwait(false);
