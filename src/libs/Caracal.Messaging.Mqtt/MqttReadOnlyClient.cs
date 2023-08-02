@@ -14,10 +14,9 @@ public sealed class MqttReadOnlyClient : IReadOnlyClient
 
         if(conn.IsFaulted)
             return new Result<ISubscription>(conn.Exception!);
-        
-        if(conn.Value!  is not MqttConnectionDetails mqttConnDetails)
-            return new Result<ISubscription>(new Exception("ConnectionDetails is not of type MqttConnectionDetails"));
 
+        var mqttConnDetails = (MqttConnectionDetails)conn.Value!;
+           
         var subscription = new MqttSubscription(mqttConnDetails, topic, cancellationToken);
         await subscription.SubscribeToTopicsAsync().ConfigureAwait(false);
         await Task.Delay(100, cancellationToken).ConfigureAwait(false);

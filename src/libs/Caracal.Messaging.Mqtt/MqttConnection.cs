@@ -13,7 +13,7 @@ public sealed class MqttConnection: IConnection, IAsyncDisposable
 
     public MqttConnection(MqttConnectionString connectionString): this(null, connectionString) { }
     
-    private MqttConnection(IManagedMqttClient? client, MqttConnectionString? connectionString)
+    internal MqttConnection(IManagedMqttClient? client, MqttConnectionString? connectionString)
      {
         Client = client??new MqttFactory().CreateManagedMqttClient();
         ConnectionString = connectionString??new MqttConnectionString();
@@ -21,8 +21,22 @@ public sealed class MqttConnection: IConnection, IAsyncDisposable
 
     public async Task<Result<ConnectionDetails>> ConnectAsync(CancellationToken cancellationToken = default)
     {
-        if (!Client.IsStarted)
+        if (!Client.IsStarted) 
+            return await TryStartClient(cancellationToken).ConfigureAwait(false);
+        
+        return CreateResult();
+    }
+
+    private async Task<Result<ConnectionDetails>> TryStartClient(CancellationToken cancellationToken)
+    {
+        try
+        {
             await Client.StartAsync(ConnectionString.Build()).ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            return new Result<ConnectionDetails>(e);
+        }
 
         return CreateResult();
     }

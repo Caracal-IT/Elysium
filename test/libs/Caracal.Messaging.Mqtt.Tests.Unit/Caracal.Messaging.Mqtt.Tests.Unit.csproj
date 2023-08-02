@@ -27,6 +27,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\src\libs\Caracal.Messaging.Mqtt\Caracal.Messaging.Mqtt.csproj" />
       <ProjectReference Include="..\..\..\src\libs\Caracal.Messaging\Caracal.Messaging.csproj" />
+      <ProjectReference Include="..\..\..\src\libs\Caracal.Text\Caracal.Text.csproj" />
     </ItemGroup>
 
 </Project>
