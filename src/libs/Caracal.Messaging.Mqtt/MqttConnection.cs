@@ -9,8 +9,6 @@ public sealed class MqttConnection: IConnection, IAsyncDisposable
     internal IManagedMqttClient Client { get; }
     internal MqttConnectionString ConnectionString { get; }
 
-    public MqttConnection(): this(null, null) { }
-
     public MqttConnection(MqttConnectionString connectionString): this(null, connectionString) { }
     
     internal MqttConnection(IManagedMqttClient? client, MqttConnectionString? connectionString)

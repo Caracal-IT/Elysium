@@ -36,7 +36,7 @@ public sealed class MqttWriteOnlyClient: IWriteOnlyClient
 
     private ManagedMqttApplicationMessage CreateMessage(Message message)
     {
-        var msg = new ManagedMqttApplicationMessage()
+        var msg = new ManagedMqttApplicationMessage
         {
             Id = Guid.NewGuid(),
             ApplicationMessage = new MqttApplicationMessage
@@ -45,7 +45,7 @@ public sealed class MqttWriteOnlyClient: IWriteOnlyClient
                 PayloadSegment = message.Payload,
                 QualityOfServiceLevel = (MqttQualityOfServiceLevel)message.Topic.QualityOfServiceLevel,
                 Retain = message.Topic.Retain,
-                ResponseTopic = _connection.ConnectionString.ProtocolVersion == MqttProtocolVersion.V500 ?  message.ResponseTopic?.Path : null,
+                ResponseTopic = _connection.ConnectionString.ProtocolVersion == MqttProtocolVersion.V500 ?  message.ResponseTopic?.Path : null
             }
         };
         

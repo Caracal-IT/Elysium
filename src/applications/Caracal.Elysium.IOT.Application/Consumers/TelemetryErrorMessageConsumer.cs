@@ -1,6 +1,7 @@
 using Caracal.Elysium.IOT.Application.Messages;
 using MassTransit;
 using Microsoft.Extensions.Logging;
+// ReSharper disable UnusedType.Global
 
 namespace Caracal.Elysium.IOT.Application.Consumers;
 
@@ -8,10 +9,7 @@ public sealed class TelemetryErrorMessageConsumer: IConsumer<TelemetryErrorMessa
 {
     private readonly ILogger<TelemetryErrorMessageConsumer> _logger;
 
-    public TelemetryErrorMessageConsumer(ILogger<TelemetryErrorMessageConsumer> logger)
-    {
-        _logger = logger;
-    }
+    public TelemetryErrorMessageConsumer(ILogger<TelemetryErrorMessageConsumer> logger) => _logger = logger;
 
     public Task Consume(ConsumeContext<TelemetryErrorMessage> context)
     {

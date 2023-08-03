@@ -14,7 +14,7 @@ public class MqttFixture: IAsyncLifetime
             .WithName(Guid.NewGuid().ToString("D"))
             .WithImage("hivemq/hivemq-ce:latest")
             .WithPortBinding(1999, 1883)
-            .WithEnvironment(new Dictionary<string, string>()
+            .WithEnvironment(new Dictionary<string, string>
             {
                 { "JAVA_OPTS", "-XX:+UnlockExperimentalVMOptions -XX:InitialRAMPercentage=30 -XX:MaxRAMPercentage=80 -XX:MinRAMPercentage=30" }
             })

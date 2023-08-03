@@ -1,3 +1,4 @@
+// ReSharper disable UnusedParameter.Global
 namespace Caracal.Messaging;
 
 public interface IConnection: IDisposable

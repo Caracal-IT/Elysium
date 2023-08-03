@@ -13,10 +13,8 @@ public sealed class MqttSubscription: ISubscription
     private readonly Topic _topic;
     private readonly Channel<MqttApplicationMessageReceivedEventArgs> _channel;
     private readonly CancellationToken _cancellationToken;
-    
-    private Exception? _lastException;
-    
-    public Exception? LastException => _lastException;
+
+    public Exception? LastException { get; private set; }
 
     internal MqttSubscription(MqttConnectionDetails connectionDetails, Topic topic, CancellationToken cancellationToken = default)
     {
@@ -41,9 +39,6 @@ public sealed class MqttSubscription: ISubscription
         _connectionDetails.MqttClient!.ApplicationMessageReceivedAsync -= OnApplicationMessageReceivedAsync;
         await _connectionDetails.MqttClient!.UnsubscribeAsync(new List<string> { _topic.Path });
     }
-
-    public IAsyncEnumerable<Result<Message>> GetNextAsync() => 
-        GetNextAsync(TimeSpan.FromDays(370));
     
     public void Dispose()
     {
@@ -57,11 +52,11 @@ public sealed class MqttSubscription: ISubscription
         _connectionDetails.MqttClient!.ApplicationMessageReceivedAsync += OnApplicationMessageReceivedAsync;
         await _connectionDetails.MqttClient!.SubscribeAsync(new List<MqttTopicFilter>(new[]
         {
-            new MqttTopicFilter { Topic = _topic.Path, QualityOfServiceLevel = (MqttQualityOfServiceLevel)_topic.QualityOfServiceLevel },
+            new MqttTopicFilter { Topic = _topic.Path, QualityOfServiceLevel = (MqttQualityOfServiceLevel)_topic.QualityOfServiceLevel }
         })).ConfigureAwait(false);
     }
 
-    private async IAsyncEnumerable<Result<Message>> GetMessagesFromChannelAsync(Channel<MqttApplicationMessageReceivedEventArgs> channel, TimeSpan timeoutDuration, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    private async IAsyncEnumerable<Result<Message>> GetMessagesFromChannelAsync(Channel<MqttApplicationMessageReceivedEventArgs, MqttApplicationMessageReceivedEventArgs> channel, TimeSpan timeoutDuration, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var combinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, new CancellationTokenSource(timeoutDuration).Token);
         
@@ -73,8 +68,8 @@ public sealed class MqttSubscription: ISubscription
                 item = await GetMessageFromChannelAsync(channel, combinedCancellationTokenSource.Token).ConfigureAwait(false);
                 if (item is null) break;
             }
-            catch (TaskCanceledException ex) { _lastException = ex; break; }
-            catch (OperationCanceledException ex) { _lastException = ex; break; }
+            catch (TaskCanceledException ex) { LastException = ex; break; }
+            catch (OperationCanceledException ex) { LastException = ex; break; }
 
             if (item.ApplicationMessage.Topic != _topic.Path) continue;
 
@@ -98,7 +93,7 @@ public sealed class MqttSubscription: ISubscription
             });
     }
 
-    private static async Task<MqttApplicationMessageReceivedEventArgs?> GetMessageFromChannelAsync(Channel<MqttApplicationMessageReceivedEventArgs> channel, CancellationToken cancellationToken)
+    private static async Task<MqttApplicationMessageReceivedEventArgs?> GetMessageFromChannelAsync(Channel<MqttApplicationMessageReceivedEventArgs, MqttApplicationMessageReceivedEventArgs> channel, CancellationToken cancellationToken)
     {
         if (!await channel.Reader.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
             return null;

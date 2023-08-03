@@ -3,6 +3,7 @@ using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Extensions.ManagedClient;
 using MQTTnet.Packets;
+// ReSharper disable HeapView.ObjectAllocation.Possible
 
 namespace Caracal.Messaging.Mqtt.Tests.Unit.TestHelpers;
 
@@ -45,7 +46,7 @@ public sealed class ManagedMqttClientWrapper : IManagedMqttClient
     private static MqttApplicationMessageReceivedEventArgs CreateEventArgs(string clientId, string topic, byte[] payload) =>
         new(
             clientId,
-            new MqttApplicationMessage{ Topic = topic,PayloadSegment = payload,},
+            new MqttApplicationMessage{ Topic = topic,PayloadSegment = payload },
             new MqttPublishPacket(),
             null);      
 
@@ -60,7 +61,7 @@ public sealed class ManagedMqttClientWrapper : IManagedMqttClient
     public Task EnqueueAsync(ManagedMqttApplicationMessage applicationMessage) =>
         _managedMqttClientImplementation.EnqueueAsync(applicationMessage);
 
-    public Task PingAsync(CancellationToken cancellationToken = new CancellationToken()) =>
+    public Task PingAsync(CancellationToken cancellationToken = new()) =>
         _managedMqttClientImplementation.PingAsync(cancellationToken);
 
     public Task StartAsync(ManagedMqttClientOptions options) => _managedMqttClientImplementation.StartAsync(options);

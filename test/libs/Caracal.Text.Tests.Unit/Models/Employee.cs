@@ -1,5 +1,6 @@
 ﻿using System.Xml.Serialization;
 using Caracal.Text.Tests.Unit.Utils;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace Caracal.Text.Tests.Unit.Models;
 

@@ -35,7 +35,7 @@ public sealed class A_Mqtt_Client: IDisposable
         await _sut.PublishAsync(_message, cancellationToken).ConfigureAwait(false);
         using var subscription = subscriptionResult.Value!;
 
-        await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(1)).ConfigureAwait(false))
+        await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(1)).WithCancellation(cancellationToken).ConfigureAwait(false))
         {
             messageFromSubscription = m.Value.Payload.GetString();
             break;
@@ -67,7 +67,7 @@ public sealed class A_Mqtt_Client: IDisposable
     private async Task PublishResponseAsync()
     {
         await Task.Yield();
-        var topic = new Topic { Path = $"test/command" };
+        var topic = new Topic { Path = "test/command" };
         var responseTopic = new Topic { Path = "test/response" };
         var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
 
@@ -75,7 +75,7 @@ public sealed class A_Mqtt_Client: IDisposable
         using var subscription = subscriptionResult.Value!;
 
         var responseMsg = string.Empty;
-        await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(1)).ConfigureAwait(false))
+        await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(1)).WithCancellation(cancellationToken).ConfigureAwait(false))
         {
             responseMsg = $"Response {m.Value.Payload.GetString()}";
             break;
@@ -94,13 +94,13 @@ public sealed class A_Mqtt_Client: IDisposable
         var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
         await Task.Delay(200, cancellationToken).ConfigureAwait(false);
         
-        var topic = new Topic { Path = $"test/command" };
+        var topic = new Topic { Path = "test/command" };
         var responseTopic = new Topic { Path = "test/response" };
 
         var message = new Message { Topic = topic, Payload = msgString.GetBytes() };
         var subscriptionResult = await _sut.PublishCommandAsync(message, responseTopic, CancellationToken.None).ConfigureAwait(false);
         using var subscription = subscriptionResult.Value!;
-        await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(1)).ConfigureAwait(false))
+        await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(1)).WithCancellation(cancellationToken).ConfigureAwait(false))
             return m.Value.Payload.GetString();
         
         return string.Empty;

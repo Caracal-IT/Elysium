@@ -18,6 +18,7 @@ public class GatewayProducer: IGatewayProducer
     private readonly IGateway _gateway;
     private readonly IBus _bus;
     
+    // ReSharper disable once MemberCanBeProtected.Global
     public GatewayProducer(IGateway gateway, IBus bus)
     {
         _gateway = gateway;

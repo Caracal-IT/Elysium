@@ -5,7 +5,7 @@
     <DockerTargetOS>Windows</DockerTargetOS>
     <ProjectGuid>c89af81c-96bb-46f2-b0be-6cda86b7fa74</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>http://{ServiceIPAddress}</DockerServiceUrl>
+    <DockerServiceUrl>https://{ServiceIPAddress}</DockerServiceUrl>
     <DockerServiceName>visualstudiodockersample</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
