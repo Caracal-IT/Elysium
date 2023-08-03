@@ -22,12 +22,12 @@ public sealed class MqttConnection: IConnection, IAsyncDisposable
     public async Task<Result<ConnectionDetails>> ConnectAsync(CancellationToken cancellationToken = default)
     {
         if (!Client.IsStarted) 
-            return await TryStartClient(cancellationToken).ConfigureAwait(false);
+            return await TryStartClient().ConfigureAwait(false);
         
         return CreateResult();
     }
 
-    private async Task<Result<ConnectionDetails>> TryStartClient(CancellationToken cancellationToken)
+    private async Task<Result<ConnectionDetails>> TryStartClient()
     {
         try
         {
