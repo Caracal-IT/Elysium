@@ -20,7 +20,7 @@ public sealed class A_Mqtt_Read_Only_Client
     public A_Mqtt_Read_Only_Client()
     {
         _client = new ManagedMqttClientWrapper(Substitute.For<IManagedMqttClient>());
-        MqttConnection connection = new(_client, new MqttConnectionString());
+        var connection = new MqttConnection(_client, new MqttConnectionString());
         _sut = new MqttReadOnlyClient(connection);
         
         _client.IsStarted.Returns(true);
