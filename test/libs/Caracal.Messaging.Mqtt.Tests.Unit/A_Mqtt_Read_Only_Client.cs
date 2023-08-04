@@ -3,6 +3,7 @@
 using System.Text;
 using Caracal.Messaging.Mqtt.Tests.Unit.TestHelpers;
 using Caracal.Text;
+using Microsoft.VisualBasic;
 using MQTTnet.Extensions.ManagedClient;
 using NSubstitute.ExceptionExtensions;
 
@@ -53,15 +54,47 @@ public sealed class A_Mqtt_Read_Only_Client
     [Fact]
     public async Task Should_Iterate_When_Subscribing()
     {
-        var result = await _sut.SubscribeAsync(_topic, _cancellationToken).ConfigureAwait(false);
-        await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 1".GetBytes());
-        await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 2".GetBytes());
-        
         var received = new StringBuilder();
-        await foreach (var item in result.Value!.GetNextAsync(TimeSpan.FromSeconds(10)).WithCancellation(_cancellationToken).ConfigureAwait(false))
-            received.Append(item.Value.Payload.GetString());
+        var result = await _sut.SubscribeAsync(_topic, _cancellationToken).ConfigureAwait(false);
+        
+        await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 1".GetBytes())
+                     .ConfigureAwait(false);
+
+        await Task.WhenAll(SendMessageAsync(), IterateAsync()).ConfigureAwait(false);
         
         result.Value.Should().BeAssignableTo<MqttSubscription>();
         received.ToString().Should().Be("Response 1Response 2");
+        return;
+
+        async Task IterateAsync()
+        {
+            await foreach (var item in result.Value!.GetNextAsync(TimeSpan.FromSeconds(10)).WithCancellation(_cancellationToken).ConfigureAwait(false)) 
+                received.Append(item.Value.Payload.GetString());
+        }
+
+        async Task SendMessageAsync()
+        {
+            await Task.Delay(100, _cancellationToken);
+            await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 2".GetBytes())
+                         .ConfigureAwait(false);
+        }
+    }
+
+    [Fact]
+    public async Task Should_Remove_Subscription_When_Unsubscribing()
+    {
+        var received = new StringBuilder();
+        var subscription = await _sut.SubscribeAsync(_topic, _cancellationToken).ConfigureAwait(false);
+
+        if (subscription.IsSuccess)
+            await subscription.Value!.UnsubscribeAsync();
+         
+        await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 1".GetBytes())
+                     .ConfigureAwait(false);
+        
+        await foreach (var item in subscription.Value!.GetNextAsync(TimeSpan.FromSeconds(100)).WithCancellation(_cancellationToken).ConfigureAwait(false)) 
+            received.Append(item.Value.Payload.GetString());
+
+        received.ToString().Should().BeEmpty();
     }
 }
