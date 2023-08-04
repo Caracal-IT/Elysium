@@ -13,6 +13,7 @@ public sealed class A_Mqtt_Write_Only_Client
 {
     private readonly Message _message;
     private readonly IManagedMqttClient _client;
+    private readonly MqttConnection _connection;
     private readonly Topic _topic = new() { Path = "path/test" };
     private readonly Topic _responseTopic = new() { Path = "test/responseTopic" };
     private readonly CancellationToken _cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
@@ -22,7 +23,7 @@ public sealed class A_Mqtt_Write_Only_Client
     public A_Mqtt_Write_Only_Client()
     {
         _client = Substitute.For<IManagedMqttClient>();
-        var connection = new MqttConnection(_client, new MqttConnectionString());
+        _connection = new MqttConnection(_client, new MqttConnectionString());
         _message = new Message
         {
             Payload = "Test".GetBytes(), 
@@ -30,7 +31,7 @@ public sealed class A_Mqtt_Write_Only_Client
             ResponseTopic = _responseTopic
         };
         
-        _sut = new MqttWriteOnlyClient(connection);
+        _sut = new MqttWriteOnlyClient(_connection);
         
         _client.IsStarted.Returns(true);
     }
@@ -57,7 +58,15 @@ public sealed class A_Mqtt_Write_Only_Client
         await _client.Received(1)
                      .EnqueueAsync(Arg.Is<ManagedMqttApplicationMessage>(a => IsValidEnqueueAsyncArgs(a)));
     }
-
+    
+    [Fact]
+    public void Should_Dispose_Connection()
+    {
+        _sut.Dispose();
+     
+        _client.Received(1).Dispose();
+    }
+    
     private bool IsValidEnqueueAsyncArgs(ManagedMqttApplicationMessage args)
     {
         var msg = args.ApplicationMessage;

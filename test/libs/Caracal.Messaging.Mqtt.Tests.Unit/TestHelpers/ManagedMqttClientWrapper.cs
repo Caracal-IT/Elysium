@@ -4,20 +4,21 @@ using MQTTnet.Client;
 using MQTTnet.Extensions.ManagedClient;
 using MQTTnet.Packets;
 // ReSharper disable HeapView.ObjectAllocation.Possible
+// ReSharper disable ClassNeverInstantiated.Global
 
 namespace Caracal.Messaging.Mqtt.Tests.Unit.TestHelpers;
 
 [ExcludeFromCodeCoverage]
-public sealed class ManagedMqttClientWrapper : IManagedMqttClient
+public class ManagedMqttClientWrapper : IManagedMqttClient
 {
     private readonly IManagedMqttClient _managedMqttClientImplementation;
-    private readonly List<Func<MqttApplicationMessageReceivedEventArgs, Task>> _events = new();
+    internal readonly List<Func<MqttApplicationMessageReceivedEventArgs, Task>> Events = new();
     
     public async Task SendApplicationMessageAsync(string clientId, string topic, byte[] payload)
     {
         var args = CreateEventArgs(clientId, topic, payload);
         
-        foreach (var eventHandler in _events)
+        foreach (var eventHandler in Events)
             await eventHandler(args);
     }
     
@@ -26,7 +27,7 @@ public sealed class ManagedMqttClientWrapper : IManagedMqttClient
         add
         {  
             if(value != null)
-                _events.Add(value);
+                Events.Add(value);
             
             _managedMqttClientImplementation.ApplicationMessageReceivedAsync += value;
         }
@@ -34,9 +35,9 @@ public sealed class ManagedMqttClientWrapper : IManagedMqttClient
         {
             if (value != null)
             {
-                var item = _events.FirstOrDefault(t => t == value);
+                var item = Events.FirstOrDefault(t => t == value);
                 if (item != null)
-                    _events.Remove(item);
+                    Events.Remove(item);
             }
 
             _managedMqttClientImplementation.ApplicationMessageReceivedAsync -= value;

@@ -19,7 +19,7 @@ public sealed class A_Mqtt_Read_Only_Client
     
     public A_Mqtt_Read_Only_Client()
     {
-        _client = new ManagedMqttClientWrapper(Substitute.For<IManagedMqttClient>());
+        _client = Substitute.For<ManagedMqttClientWrapper>(Substitute.For<IManagedMqttClient>());
         var connection = new MqttConnection(_client, new MqttConnectionString());
         _sut = new MqttReadOnlyClient(connection);
         
@@ -44,7 +44,6 @@ public sealed class A_Mqtt_Read_Only_Client
     {
         var result = await _sut.SubscribeAsync(_topic, _cancellationToken).ConfigureAwait(false);
         
-        _client.Dispose();
         result.IsFaulted.Should().BeFalse();
         result.Exception.Should().BeNull();
         result.IsSuccess.Should().BeTrue();
@@ -90,6 +89,9 @@ public sealed class A_Mqtt_Read_Only_Client
         await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 1".GetBytes())
                      .ConfigureAwait(false);
         
+        await _client.SendApplicationMessageAsync("MockClient", "path/test2", "Response 21".GetBytes())
+                     .ConfigureAwait(false);
+        
         var subscription = subscriptionResult.Value!;
         var resultsBeforeUnsubscribe = await GetPublishedMessages(subscription, _cancellationToken).ConfigureAwait(false);
         
@@ -103,6 +105,23 @@ public sealed class A_Mqtt_Read_Only_Client
         resultsBeforeUnsubscribe.Should().Be("Response 1");
         resultsAfterUnsubscribe.Should().BeEmpty();
         ((MqttSubscription)subscription).LastException.Should().BeAssignableTo<OperationCanceledException>();
+    }
+    
+    [Fact]
+    public void Should_Dispose_Connection()
+    {
+        _sut.Dispose();
+        _client.Received(1).Dispose();
+    }
+    
+    [Fact]
+    public async Task Should_Dispose_Subscription_Should_Unsubscribe()
+    {
+        var result = await _sut.SubscribeAsync(_topic, _cancellationToken);
+        result.Value!.Dispose();
+
+        _client.Events.Should().BeEmpty();
+        await _client.Received(1).UnsubscribeAsync(Arg.Any<string[]>()).ConfigureAwait(false);
     }
 
     private static async Task<string> GetPublishedMessages(ISubscription subscription, CancellationToken cancellationToken)
