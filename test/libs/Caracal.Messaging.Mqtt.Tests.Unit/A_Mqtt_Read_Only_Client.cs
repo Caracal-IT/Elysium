@@ -83,18 +83,32 @@ public sealed class A_Mqtt_Read_Only_Client
     [Fact]
     public async Task Should_Remove_Subscription_When_Unsubscribing()
     {
-        var received = new StringBuilder();
-        var subscription = await _sut.SubscribeAsync(_topic, _cancellationToken).ConfigureAwait(false);
+        var subscriptionResult = await _sut.SubscribeAsync(_topic, _cancellationToken).ConfigureAwait(false);
 
-        if (subscription.IsSuccess)
-            await subscription.Value!.UnsubscribeAsync();
-         
         await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 1".GetBytes())
                      .ConfigureAwait(false);
         
-        await foreach (var item in subscription.Value!.GetNextAsync(TimeSpan.FromSeconds(100)).WithCancellation(_cancellationToken).ConfigureAwait(false)) 
-            received.Append(item.Value.Payload.GetString());
+        var subscription = subscriptionResult.Value!;
+        var resultsBeforeUnsubscribe = await GetPublishedMessages(subscription, _cancellationToken).ConfigureAwait(false);
+        
+        await subscription.UnsubscribeAsync();
+         
+        await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 1".GetBytes())
+                     .ConfigureAwait(false);
 
-        received.ToString().Should().BeEmpty();
+        var resultsAfterUnsubscribe = await GetPublishedMessages(subscription, _cancellationToken).ConfigureAwait(false);
+        
+        resultsBeforeUnsubscribe.Should().Be("Response 1");
+        resultsAfterUnsubscribe.Should().BeEmpty();
+    }
+
+    private async Task<string> GetPublishedMessages(ISubscription subscription, CancellationToken cancellationToken)
+    {
+        var received = new StringBuilder();
+
+        await foreach (var item in subscription.GetNextAsync(TimeSpan.FromMilliseconds(100)).WithCancellation(cancellationToken).ConfigureAwait(false)) 
+            received.Append(item.Value.Payload.GetString());
+        
+        return received.ToString();
     }
 }
