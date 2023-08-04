@@ -67,4 +67,30 @@ public sealed class The_Result_Object
         result.IsSuccess.Should().BeFalse();
         result.IsFaulted.Should().BeTrue();
     }
+    
+    [Fact]
+    public void Should_Match_The_Successful_Result_With_Action()
+    {
+        var result = new Result<int>(42);
+        var value = 0;
+        Action<Exception> faulted = null!;
+        
+        result.Match(Success, faulted);
+        value.Should().Be(42);
+        return;
+        void Success(int v) => value = v;
+    }
+    
+    [Fact]
+    public void  Should_Match_The_Faulted_Result_With_Action()
+    {
+        var exception = new Exception();
+        var result = new Result<int>(exception);
+        Action<int> success = null!;
+        Exception? faulted = null;
+        
+        result.Match(success, ex => faulted = ex);
+        
+        faulted.Should().Be(exception);
+    }
 }
