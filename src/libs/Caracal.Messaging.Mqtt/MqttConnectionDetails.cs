@@ -2,7 +2,7 @@ using MQTTnet.Extensions.ManagedClient;
 
 namespace Caracal.Messaging.Mqtt;
 
-public sealed class MqttConnectionDetails: ConnectionDetails, IDisposable
+public sealed class MqttConnectionDetails: IConnectionDetails, IDisposable
 {
     internal IManagedMqttClient? MqttClient;
 

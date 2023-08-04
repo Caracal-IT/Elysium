@@ -23,7 +23,7 @@ public sealed class MqttWriteOnlyClient: IWriteOnlyClient
         return conn.Exception!;
     }
 
-    private async Task<Result<bool>> OnSuccess(Message message, ConnectionDetails connectionDetails)
+    private async Task<Result<bool>> OnSuccess(Message message, IConnectionDetails connectionDetails)
     {
         if (connectionDetails is not MqttConnectionDetails mqttConnectionDetails) return false;
         

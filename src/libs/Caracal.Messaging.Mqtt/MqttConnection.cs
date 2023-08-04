@@ -17,7 +17,7 @@ public sealed class MqttConnection: IConnection, IAsyncDisposable
         ConnectionString = connectionString??new MqttConnectionString();
     }
 
-    public async Task<Result<ConnectionDetails>> ConnectAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<IConnectionDetails>> ConnectAsync(CancellationToken cancellationToken = default)
     {
         if (!Client.IsStarted) 
             return await TryStartClient().ConfigureAwait(false);
@@ -25,7 +25,7 @@ public sealed class MqttConnection: IConnection, IAsyncDisposable
         return CreateResult();
     }
 
-    private async Task<Result<ConnectionDetails>> TryStartClient()
+    private async Task<Result<IConnectionDetails>> TryStartClient()
     {
         try
         {
@@ -33,13 +33,13 @@ public sealed class MqttConnection: IConnection, IAsyncDisposable
         }
         catch (Exception e)
         {
-            return new Result<ConnectionDetails>(e);
+            return new Result<IConnectionDetails>(e);
         }
 
         return CreateResult();
     }
 
-    public async Task<Result<ConnectionDetails>> DisconnectAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<IConnectionDetails>> DisconnectAsync(CancellationToken cancellationToken = default)
     {
         if (!Client.IsStarted) return CreateResult();
         
@@ -58,12 +58,11 @@ public sealed class MqttConnection: IConnection, IAsyncDisposable
     public void Dispose() =>
         Client.Dispose();
 
-    private Result<ConnectionDetails> CreateResult()
+    private Result<IConnectionDetails> CreateResult()
     {
-        return new Result<ConnectionDetails>(new MqttConnectionDetails
+        return new Result<IConnectionDetails>(new MqttConnectionDetails
         {
-            MqttClient = Client,
-            IsConnected = Client.IsStarted
+            MqttClient = Client
         });
     }
 
