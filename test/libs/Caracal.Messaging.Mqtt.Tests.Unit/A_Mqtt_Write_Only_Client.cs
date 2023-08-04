@@ -14,6 +14,7 @@ public class A_Mqtt_Write_Only_Client
     private readonly Message _message;
     private readonly IManagedMqttClient _client;
     private readonly Topic _topic = new() { Path = "path/test" };
+    private readonly Topic _responseTopic = new() { Path = "test/responseTopic" };
     private readonly CancellationToken _cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
 
     private readonly MqttWriteOnlyClient _sut;
@@ -22,7 +23,12 @@ public class A_Mqtt_Write_Only_Client
     {
         _client = Substitute.For<IManagedMqttClient>();
         var connection = new MqttConnection(_client, new MqttConnectionString());
-        _message = new Message { Payload = "Test".GetBytes(), Topic = _topic };
+        _message = new Message
+        {
+            Payload = "Test".GetBytes(), 
+            Topic = _topic,
+            ResponseTopic = _responseTopic
+        };
         
         _sut = new MqttWriteOnlyClient(connection);
         
@@ -45,11 +51,19 @@ public class A_Mqtt_Write_Only_Client
     [Fact]
     public async Task Should_Return_Successful_Publish_Message()
     {
-        var b =  _client.EnqueueAsync(Arg.Any<ManagedMqttApplicationMessage>())
-            .Returns(Task.CompletedTask);
-        
         var result = await _sut.PublishAsync(_message, _cancellationToken);
-    
-        
+
+        result.Value.Should().Be(true);
+        await _client.Received(1)
+                     .EnqueueAsync(Arg.Is<ManagedMqttApplicationMessage>(a => IsValidEnqueueAsyncArgs(a)));
+    }
+
+    private bool IsValidEnqueueAsyncArgs(ManagedMqttApplicationMessage args)
+    {
+        var msg = args.ApplicationMessage;
+
+        return msg.Topic == _topic.Path
+               && msg.PayloadSegment == _message.Payload 
+               && msg.ResponseTopic == _responseTopic.Path;
     }
 }
