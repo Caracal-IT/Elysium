@@ -25,12 +25,13 @@ public sealed class MqttWriteOnlyClient: IWriteOnlyClient
 
     private async Task<Result<bool>> OnSuccess(Message message, IConnectionDetails connectionDetails)
     {
-        if (connectionDetails is not MqttConnectionDetails mqttConnectionDetails) return false;
-        
-        await mqttConnectionDetails.MqttClient!
-                                   .EnqueueAsync(CreateMessage(message))
-                                   .ConfigureAwait(false);
-        
+        if (connectionDetails is MqttConnectionDetails mqttConnectionDetails)
+        {
+            await mqttConnectionDetails.MqttClient!
+                                       .EnqueueAsync(CreateMessage(message))
+                                       .ConfigureAwait(false);
+        }
+
         return true;
     }
 

@@ -44,6 +44,7 @@ public sealed class A_Mqtt_Read_Only_Client
     {
         var result = await _sut.SubscribeAsync(_topic, _cancellationToken).ConfigureAwait(false);
         
+        _client.Dispose();
         result.IsFaulted.Should().BeFalse();
         result.Exception.Should().BeNull();
         result.IsSuccess.Should().BeTrue();
@@ -76,6 +77,8 @@ public sealed class A_Mqtt_Read_Only_Client
             await Task.Delay(100, _cancellationToken);
             await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 2".GetBytes())
                          .ConfigureAwait(false);
+            
+            ((MqttSubscription) result.Value!).Channel.Writer.Complete();
         }
     }
 
@@ -99,9 +102,10 @@ public sealed class A_Mqtt_Read_Only_Client
         
         resultsBeforeUnsubscribe.Should().Be("Response 1");
         resultsAfterUnsubscribe.Should().BeEmpty();
+        ((MqttSubscription)subscription).LastException.Should().BeAssignableTo<OperationCanceledException>();
     }
 
-    private async Task<string> GetPublishedMessages(ISubscription subscription, CancellationToken cancellationToken)
+    private static async Task<string> GetPublishedMessages(ISubscription subscription, CancellationToken cancellationToken)
     {
         var received = new StringBuilder();
 

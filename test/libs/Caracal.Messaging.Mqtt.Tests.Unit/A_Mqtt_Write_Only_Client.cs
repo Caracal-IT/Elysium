@@ -9,7 +9,7 @@ using NSubstitute.ReceivedExtensions;
 namespace Caracal.Messaging.Mqtt.Tests.Unit;
 
 [Trait("Category","Unit")]
-public class A_Mqtt_Write_Only_Client
+public sealed class A_Mqtt_Write_Only_Client
 {
     private readonly Message _message;
     private readonly IManagedMqttClient _client;

@@ -11,7 +11,7 @@ public sealed class MqttSubscription: ISubscription
 {
     private readonly MqttConnectionDetails _connectionDetails;
     private readonly Topic _topic;
-    private readonly Channel<MqttApplicationMessageReceivedEventArgs> _channel;
+    internal readonly Channel<MqttApplicationMessageReceivedEventArgs> Channel;
     private readonly CancellationToken _cancellationToken;
 
     public Exception? LastException { get; private set; }
@@ -22,15 +22,15 @@ public sealed class MqttSubscription: ISubscription
         _topic = topic;
         _cancellationToken = cancellationToken;
         
-        _channel = Channel.CreateUnbounded<MqttApplicationMessageReceivedEventArgs>();
+        Channel = System.Threading.Channels.Channel.CreateUnbounded<MqttApplicationMessageReceivedEventArgs>();
     }
 
     private async Task OnApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs arg) => 
-        await _channel.Writer.WriteAsync(arg, _cancellationToken);
+        await Channel.Writer.WriteAsync(arg, _cancellationToken);
 
     public async IAsyncEnumerable<Result<Message>> GetNextAsync(TimeSpan timeoutDuration)
     {
-        await foreach (var message in GetMessagesFromChannelAsync(_channel, timeoutDuration, _cancellationToken))
+        await foreach (var message in GetMessagesFromChannelAsync(Channel, timeoutDuration, _cancellationToken))
             yield return message;
     }
 
@@ -43,7 +43,7 @@ public sealed class MqttSubscription: ISubscription
     public void Dispose()
     {
         _connectionDetails.MqttClient!.ApplicationMessageReceivedAsync -= OnApplicationMessageReceivedAsync;
-        _channel.Writer.TryComplete();
+        Channel.Writer.TryComplete();
         _connectionDetails.Dispose();
     }
 
@@ -68,7 +68,6 @@ public sealed class MqttSubscription: ISubscription
                 item = await GetMessageFromChannelAsync(channel, combinedCancellationTokenSource.Token).ConfigureAwait(false);
                 if (item is null) break;
             }
-            catch (TaskCanceledException ex) { LastException = ex; break; }
             catch (OperationCanceledException ex) { LastException = ex; break; }
 
             if (item.ApplicationMessage.Topic != _topic.Path) continue;
@@ -97,7 +96,7 @@ public sealed class MqttSubscription: ISubscription
     {
         if (!await channel.Reader.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
             return null;
-
+        
         return await channel.Reader.ReadAsync(cancellationToken).ConfigureAwait(false);
     }
 }
