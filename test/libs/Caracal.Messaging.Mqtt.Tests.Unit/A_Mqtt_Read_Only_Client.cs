@@ -3,7 +3,6 @@
 using System.Text;
 using Caracal.Messaging.Mqtt.Tests.Unit.TestHelpers;
 using Caracal.Text;
-using Microsoft.VisualBasic;
 using MQTTnet.Extensions.ManagedClient;
 using NSubstitute.ExceptionExtensions;
 
