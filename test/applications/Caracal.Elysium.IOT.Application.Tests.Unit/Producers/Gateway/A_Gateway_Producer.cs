@@ -32,7 +32,7 @@ public class A_Gateway_Producer
     [Fact]
     public async Task Should_Send_Telemetry_Message()
     {
-        var results = Enumerable.Range(1, 5)
+        var results = Enumerable.Range(1, 4)
                                 .Select(CreateSuccessResponse)
                                 .ToList();
         

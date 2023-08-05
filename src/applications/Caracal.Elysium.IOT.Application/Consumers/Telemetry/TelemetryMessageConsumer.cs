@@ -1,27 +1,17 @@
 using Caracal.Elysium.IOT.Application.Messages;
 using Caracal.Messaging;
-using Caracal.Text;
 using MassTransit;
-using Microsoft.Extensions.Logging;
 
 namespace Caracal.Elysium.IOT.Application.Consumers.Telemetry;
 
 public sealed class TelemetryMessageConsumer: IConsumer<TelemetryMessage>
 {
-    private readonly ILogger<TelemetryMessageConsumer> _logger;
     private readonly IWriteOnlyClient _client;
 
-    public TelemetryMessageConsumer(ILogger<TelemetryMessageConsumer> logger, IWriteOnlyClient client)
-    {
-        _logger = logger;
-        _client = client;
-    }
+    public TelemetryMessageConsumer(IWriteOnlyClient client) => _client = client;
 
     public async Task Consume(ConsumeContext<TelemetryMessage> context)
     {
-        if(_logger.IsEnabled(LogLevel.Information))
-            _logger.LogInformation("Telemetry message received: {Payload}", context.Message.Payload.GetString());
-        
         var message = new Message
         {
             Topic = new Topic

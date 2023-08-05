@@ -31,4 +31,6 @@
       <ProjectReference Include="..\..\..\src\libs\Caracal.IOT\Caracal.IOT.csproj" />
     </ItemGroup>
 
+
+
 </Project>
