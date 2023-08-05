@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Caracal.IOT;
 using Caracal.Lang;
 using Caracal.Text;
 
 namespace Caracal.Elysium.Services.Mocks;
 
+[ExcludeFromCodeCoverage]
 public sealed class MockGateway : IGateway
 {
     public async Task<Result<Response>> ExecuteAsync(CancellationToken cancellationToken = default)
