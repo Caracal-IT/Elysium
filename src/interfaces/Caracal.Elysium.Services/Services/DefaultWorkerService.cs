@@ -1,4 +1,4 @@
-using Caracal.Elysium.IOT.Application.Producers;
+using Caracal.Elysium.IOT.Application.Producers.Gateway;
 
 namespace Caracal.Elysium.Services.Services;
 

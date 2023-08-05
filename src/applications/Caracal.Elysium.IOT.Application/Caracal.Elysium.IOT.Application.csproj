@@ -22,4 +22,5 @@
       <PackageReference Include="MassTransit" Version="8.1.0-develop.1447" />
     </ItemGroup>
 
+
 </Project>

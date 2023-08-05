@@ -1,5 +1,5 @@
 using Caracal.Elysium.IOT.Application.Consumers;
-using Caracal.Elysium.IOT.Application.Producers;
+using Caracal.Elysium.IOT.Application.Producers.Gateway;
 using Caracal.Elysium.Services.Mocks;
 using Caracal.Elysium.Services.Services;
 using Caracal.IOT;
