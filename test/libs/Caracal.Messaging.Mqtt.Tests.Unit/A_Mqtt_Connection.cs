@@ -1,9 +1,7 @@
 // ReSharper disable InconsistentNaming
 
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using MQTTnet.Extensions.ManagedClient;
 using NSubstitute.ExceptionExtensions;
-using NSubstitute.ReceivedExtensions;
 
 namespace Caracal.Messaging.Mqtt.Tests.Unit;
 

@@ -1,10 +1,8 @@
 ﻿// ReSharper disable InconsistentNaming
 
-using Caracal.Messaging.Mqtt.Tests.Unit.TestHelpers;
 using Caracal.Text;
 using MQTTnet.Extensions.ManagedClient;
 using NSubstitute.ExceptionExtensions;
-using NSubstitute.ReceivedExtensions;
 
 namespace Caracal.Messaging.Mqtt.Tests.Unit;
 
@@ -13,7 +11,6 @@ public sealed class A_Mqtt_Write_Only_Client
 {
     private readonly Message _message;
     private readonly IManagedMqttClient _client;
-    private readonly MqttConnection _connection;
     private readonly Topic _topic = new() { Path = "path/test" };
     private readonly Topic _responseTopic = new() { Path = "test/responseTopic" };
     private readonly CancellationToken _cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
@@ -23,7 +20,7 @@ public sealed class A_Mqtt_Write_Only_Client
     public A_Mqtt_Write_Only_Client()
     {
         _client = Substitute.For<IManagedMqttClient>();
-        _connection = new MqttConnection(_client, new MqttConnectionString());
+        var connection = new MqttConnection(_client, new MqttConnectionString());
         _message = new Message
         {
             Payload = "Test".GetBytes(), 
@@ -31,7 +28,7 @@ public sealed class A_Mqtt_Write_Only_Client
             ResponseTopic = _responseTopic
         };
         
-        _sut = new MqttWriteOnlyClient(_connection);
+        _sut = new MqttWriteOnlyClient(connection);
         
         _client.IsStarted.Returns(true);
     }
