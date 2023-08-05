@@ -4,7 +4,7 @@ using Caracal.Text;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
-namespace Caracal.Elysium.IOT.Application.Consumers;
+namespace Caracal.Elysium.IOT.Application.Consumers.Telemetry;
 
 public sealed class TelemetryMessageConsumer: IConsumer<TelemetryMessage>
 {
