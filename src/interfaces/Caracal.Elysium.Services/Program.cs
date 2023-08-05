@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Caracal.Elysium.IOT.Application.Consumers;
 using Caracal.Elysium.IOT.Application.Producers.Gateway;
 using Caracal.Elysium.Services.Mocks;
@@ -35,3 +36,6 @@ var app = builder.Build();
 app.MapGet("/", () => "Hello World!");
 
 app.Run();
+
+[ExcludeFromCodeCoverage]
+public partial class Program { }

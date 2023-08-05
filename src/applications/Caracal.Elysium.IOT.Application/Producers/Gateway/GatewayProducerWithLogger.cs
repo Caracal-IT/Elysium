@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Caracal.IOT;
 using Caracal.Lang;
 using Caracal.Text;
@@ -7,6 +8,7 @@ using Response = Caracal.IOT.Response;
 
 namespace Caracal.Elysium.IOT.Application.Producers.Gateway;
 
+[ExcludeFromCodeCoverage]
 public sealed class GatewayProducerWithLogger: GatewayProducer
 {
     private readonly ILogger<GatewayProducerWithLogger> _logger;
