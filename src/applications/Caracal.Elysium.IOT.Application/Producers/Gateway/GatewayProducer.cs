@@ -9,14 +9,17 @@ namespace Caracal.Elysium.IOT.Application.Producers.Gateway;
 
 public class GatewayProducer: IGatewayProducer
 {
+    private readonly short _delay;
     private readonly IGateway _gateway;
     private readonly IBus _bus;
     
+    
     // ReSharper disable once MemberCanBeProtected.Global
-    public GatewayProducer(IGateway gateway, IBus bus)
+    public GatewayProducer(IGateway gateway, IBus bus, short delay = 3000)
     {
         _gateway = gateway;
         _bus = bus;
+        _delay = delay;
     }
 
     public virtual async Task ExecuteAsync(CancellationToken cancellationToken = default)
@@ -25,7 +28,7 @@ public class GatewayProducer: IGatewayProducer
         {
             await HandleResponse(await _gateway.ExecuteAsync(cancellationToken), cancellationToken).ConfigureAwait(false);
 
-            await Task.Delay(3000, cancellationToken).ConfigureAwait(false);
+            await Task.WhenAny(Task.Delay(_delay, cancellationToken)).ConfigureAwait(false);
         }
     }
     
@@ -33,10 +36,7 @@ public class GatewayProducer: IGatewayProducer
     {
         await result.Match<Task>(async response =>
             {
-                var msg = new TelemetryMessage
-                {
-                    Payload = response.Payload
-                };
+                var msg = new TelemetryMessage { Payload = response.Payload };
                 
                 await  _bus.Publish(msg, cancellationToken).ConfigureAwait(false);
             }, async error =>
