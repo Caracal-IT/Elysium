@@ -59,16 +59,16 @@ public sealed class A_Mqtt_Read_Only_Client
         await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 1".GetBytes())
                      .ConfigureAwait(false);
 
-        await Task.WhenAll(SendMessageAsync(), IterateAsync()).ConfigureAwait(false);
+        await Task.WhenAll(SendMessageAsync(), IterateAsync(received)).ConfigureAwait(false);
         
         result.Value.Should().BeAssignableTo<MqttSubscription>();
         received.ToString().Should().Be("Response 1Response 2");
         return;
 
-        async Task IterateAsync()
+        async Task IterateAsync(StringBuilder output)
         {
             await foreach (var item in result.Value!.GetNextAsync(TimeSpan.FromSeconds(10)).WithCancellation(_cancellationToken).ConfigureAwait(false)) 
-                received.Append(item.Value.Payload.GetString());
+                output.Append(item.Value.Payload.GetString());
         }
 
         async Task SendMessageAsync()

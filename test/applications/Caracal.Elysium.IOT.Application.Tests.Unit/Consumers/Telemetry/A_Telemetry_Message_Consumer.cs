@@ -35,11 +35,10 @@ public class A_Telemetry_Message_Consumer
         await _client.Received(1).PublishAsync(Arg.Is<Message>(m => IsValidMessage(m)), _cancellationToken).ConfigureAwait(false);
     }
 
-    private bool IsValidMessage(Message message)
+    private static bool IsValidMessage(Message message)
     {
         return message.Payload.GetString().Equals("Test Payload") &&
                message.Topic.Path.StartsWith("Device/") &&
-               message.Topic.QualityOfServiceLevel == 1 &&
-               message.Topic.Retain;
+               message.Topic is { QualityOfServiceLevel: 1, Retain: true };
     }
 }

@@ -7,10 +7,12 @@ using Caracal.IOT;
 using Caracal.Messaging;
 using Caracal.Messaging.Mqtt;
 using MassTransit;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
+    .AddSerilog(cfg => cfg.ReadFrom.Configuration(builder.Configuration))
     .AddSingleton<IGateway, MockGateway>()
     .AddSingleton<IGatewayProducer, GatewayProducerWithLogger>()
     .AddSingleton<IWriteOnlyClient>(_ =>
@@ -32,6 +34,8 @@ builder.Services
 builder.Services.AddHostedService<DefaultWorkerService>();
 
 var app = builder.Build();
+
+app.UseSerilogRequestLogging();
 
 app.MapGet("/", () => "Hello World!");
 
