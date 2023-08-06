@@ -18,7 +18,7 @@ builder.Services
         cfg.ReadFrom.Configuration(builder.Configuration);
         cfg.Enrich.WithProperty("AppName", builder.Configuration["AppName"]);
         cfg.Enrich.WithProperty("HostingLocation", builder.Configuration["HostingLocation"]);
-        cfg.Enrich.WithCallerInfo(true, new List<string> { "Caracal.Elysium.Services" });
+        cfg.Enrich.WithCallerInfo(true, new List<string> { "Caracal.Elysium.Services", "Caracal.Elysium.IOT" });
         cfg.Enrich.FromLogContext();
     })
     .AddSingleton<IGateway, MockGateway>()

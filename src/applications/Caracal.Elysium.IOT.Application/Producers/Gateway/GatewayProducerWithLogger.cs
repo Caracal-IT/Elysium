@@ -28,7 +28,6 @@ public sealed class GatewayProducerWithLogger: GatewayProducer
 
     protected override async Task HandleResponse(Result<Response> result, CancellationToken cancellationToken = default)
     {
-
         result.Match(
             response =>
             {
