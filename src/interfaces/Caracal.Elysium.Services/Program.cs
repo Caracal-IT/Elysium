@@ -12,7 +12,12 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddSerilog(cfg => cfg.ReadFrom.Configuration(builder.Configuration))
+    .AddSerilog(cfg =>
+    {
+        cfg.ReadFrom.Configuration(builder.Configuration);
+        cfg.Enrich.WithProperty("AppName", builder.Configuration["AppName"]);
+        cfg.Enrich.WithProperty("HostingLocation", builder.Configuration["HostingLocation"]);
+    })
     .AddSingleton<IGateway, MockGateway>()
     .AddSingleton<IGatewayProducer, GatewayProducerWithLogger>()
     .AddSingleton<IWriteOnlyClient>(_ =>
