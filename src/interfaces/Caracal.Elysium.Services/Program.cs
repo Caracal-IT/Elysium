@@ -8,6 +8,7 @@ using Caracal.Messaging;
 using Caracal.Messaging.Mqtt;
 using MassTransit;
 using Serilog;
+using Serilog.Enrichers.CallerInfo;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@ builder.Services
         cfg.ReadFrom.Configuration(builder.Configuration);
         cfg.Enrich.WithProperty("AppName", builder.Configuration["AppName"]);
         cfg.Enrich.WithProperty("HostingLocation", builder.Configuration["HostingLocation"]);
+        cfg.Enrich.WithCallerInfo(true, new List<string> { "Caracal.Elysium.Services" });
+        cfg.Enrich.FromLogContext();
     })
     .AddSingleton<IGateway, MockGateway>()
     .AddSingleton<IGatewayProducer, GatewayProducerWithLogger>()
