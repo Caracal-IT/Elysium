@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+using Caracal.ErrorCodes;
 using Caracal.IOT;
 using Caracal.Lang;
 using Caracal.Text;
@@ -18,12 +18,12 @@ public sealed class GatewayProducerWithLogger: GatewayProducer
     public override async Task ExecuteAsync(CancellationToken cancellationToken = default)
     {
         if(_logger.IsEnabled(LogLevel.Information))
-            _logger.LogInformation("Starting Gateway Producer");
+            _logger.LogInformation(GatewayCodes.GatewayStarted,"Starting Gateway Producer");
         
         await base.ExecuteAsync(cancellationToken).ConfigureAwait(false);
 
         if(_logger.IsEnabled(LogLevel.Information))
-            _logger.LogInformation("Gateway Producer stopped");
+            _logger.LogInformation(GatewayCodes.GatewayStopped,"Stopping Gateway Producer");
     }
 
     protected override async Task HandleResponse(Result<Response> result, CancellationToken cancellationToken = default)
@@ -33,12 +33,12 @@ public sealed class GatewayProducerWithLogger: GatewayProducer
             response =>
             {
                 if (_logger.IsEnabled(LogLevel.Information))
-                    _logger.LogInformation("Gateway response: {Response}", response.Payload.GetString());
+                    _logger.LogInformation(GatewayCodes.GatewaySuccess, "Gateway Response: {Response}", response.Payload.GetString());
             },
             error =>
             {
                 if (_logger.IsEnabled(LogLevel.Error))
-                    _logger.LogError("Gateway error: {Error}", error.Message);
+                    _logger.LogError(GatewayCodes.GatewayFailed,"Gateway Error: {Error}", error.Message);
             });
 
         await base.HandleResponse(result, cancellationToken).ConfigureAwait(false);
