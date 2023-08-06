@@ -8,6 +8,11 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <Deterministic>false</Deterministic>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="MassTransit" Version="8.1.0-develop.1447" />
         <PackageReference Include="Serilog" Version="3.0.2-dev-02044" />
