@@ -12,11 +12,7 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddSerilog(cfg =>
-    {
-        cfg.ReadFrom.Configuration(builder.Configuration);
-        cfg.Enrich.WithComputed("SourceContextName", "Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)");
-    })
+    .AddSerilog(cfg => cfg.ReadFrom.Configuration(builder.Configuration))
     .AddSingleton<IGateway, MockGateway>()
     .AddSingleton<IGatewayProducer, GatewayProducerWithLogger>()
     .AddSingleton<IWriteOnlyClient>(_ =>
