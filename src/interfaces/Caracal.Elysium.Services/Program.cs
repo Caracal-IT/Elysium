@@ -16,9 +16,11 @@ builder.Services
     .AddSerilog(cfg =>
     {
         cfg.ReadFrom.Configuration(builder.Configuration);
+        cfg.Enrich.WithCallerInfo(
+            includeFileInfo: true, 
+            assemblyPrefix: "Caracal.");
         cfg.Enrich.WithProperty("AppName", builder.Configuration["AppName"]);
         cfg.Enrich.WithProperty("HostingLocation", builder.Configuration["HostingLocation"]);
-        cfg.Enrich.WithCallerInfo(true, new List<string> { "Caracal.Elysium.Services", "Caracal.Elysium.IOT" });
         cfg.Enrich.FromLogContext();
     })
     .AddSingleton<IGateway, MockGateway>()
@@ -31,13 +33,13 @@ builder.Services
     });
 
 builder.Services
-    .AddMassTransit(x =>
-    {
-        x.AddConsumers(typeof(IConsumerMarker).Assembly);
-        x.UsingInMemory((context, cfg) => {
-            cfg.ConfigureEndpoints(context);
-        });
-    });
+       .AddMassTransit(x =>
+       {
+            x.AddConsumers(typeof(IConsumerMarker).Assembly);
+            x.UsingInMemory((context, cfg) => {
+                cfg.ConfigureEndpoints(context);
+            });
+       });
 
 builder.Services.AddHostedService<DefaultWorkerService>();
 

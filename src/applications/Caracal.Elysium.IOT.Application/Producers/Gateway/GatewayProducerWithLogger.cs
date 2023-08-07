@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Caracal.ErrorCodes;
 using Caracal.IOT;
 using Caracal.Lang;
