@@ -10,10 +10,8 @@
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
     <None Include="docker-compose.yml" />
-    <None Include=".dockerignore" />
   </ItemGroup>
   <ItemGroup>
-    <None Include=".dockerignore" />
     <None Include="elk\.env" />
     <None Include="elk\certs\ca\ca.crt" />
     <None Include="elk\certs\ca\ca.key" />
