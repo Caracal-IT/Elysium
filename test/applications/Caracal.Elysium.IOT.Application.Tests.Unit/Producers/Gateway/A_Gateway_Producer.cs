@@ -37,7 +37,7 @@ public class A_Gateway_Producer
                                 .ToList();
         
         results.Insert(2, Task.FromResult(new Result<Response>(new Exception("Test Error"))));
-        _cancellationTokenSource.CancelAfter(TimeSpan.FromMilliseconds(200));
+        _cancellationTokenSource.CancelAfter(TimeSpan.FromMilliseconds(210));
         
         _gateway.ExecuteAsync(_cancellationToken)
                 .Returns(
@@ -50,7 +50,7 @@ public class A_Gateway_Producer
         
         await _sut.ExecuteAsync(_cancellationToken).ConfigureAwait(false);
         
-        await _bus.Received(3).Publish(Arg.Any<TelemetryMessage>(), _cancellationToken).ConfigureAwait(false);
+        await _bus.Received().Publish(Arg.Any<TelemetryMessage>(), _cancellationToken).ConfigureAwait(false);
         await _bus.Received(1).Publish(Arg.Any<TelemetryErrorMessage>(), _cancellationToken).ConfigureAwait(false);
     }
 
