@@ -31,6 +31,9 @@
 
     <PropertyGroup>
         <ServerGarbageCollection>true</ServerGarbageCollection>
+        <DockerfileContext>..\..\..</DockerfileContext>
+        <DockerComposeProjectPath>..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
+        <UserSecretsId>0475d26b-ac3d-4261-8f11-5690b85c6f04</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>

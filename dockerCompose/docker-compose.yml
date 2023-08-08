@@ -1,6 +1,12 @@
-version: "3.9"
+version: '3.9'
 name: "elysium"
 services:
+  caracal.elysium.services:
+    image: ${DOCKER_REGISTRY-}caracalelysiumservices
+    build:
+      context: .
+      dockerfile: ../src/interfaces/Caracal.Elysium.Services/Dockerfile
+   
   hivemq-server:
     image: hivemq/hivemq-ce:latest
     container_name: hivemq-server
@@ -18,8 +24,6 @@ services:
       - ./hivemq/server/conf:/opt/hivemq/conf
       - ./hivemq/hivemq-prometheus-extension:/opt/hivemq/extensions/hivemq-prometheus-extension
       - ../build/certs/hivemq/certs/default:/certs
-    networks:
-      - caracal-network
     environment:
       JAVA_OPTS: "-XX:+UnlockExperimentalVMOptions -XX:InitialRAMPercentage=30 -XX:MaxRAMPercentage=80 -XX:MinRAMPercentage=30"
 
@@ -39,10 +43,5 @@ services:
       - ./hivemq/cloud/conf:/opt/hivemq/conf
       - ./hivemq/hivemq-prometheus-extension:/opt/hivemq/extensions/hivemq-prometheus-extension
       - ../build/certs/hivemq/certs/cloud:/certs
-    networks:
-      - caracal-network
     environment:
       JAVA_OPTS: "-XX:+UnlockExperimentalVMOptions -XX:InitialRAMPercentage=30 -XX:MaxRAMPercentage=80 -XX:MinRAMPercentage=30"
-      
-networks:
-  caracal-network:
