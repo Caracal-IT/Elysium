@@ -8,8 +8,6 @@ public sealed class DefaultWorkerService: BackgroundService
 
     public DefaultWorkerService(IGatewayProducer gatewayProducer) => _gatewayProducer = gatewayProducer;
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken) => 
         await _gatewayProducer.ExecuteAsync(stoppingToken).ConfigureAwait(false);
-    }
 }

@@ -81,16 +81,12 @@ public sealed class MqttSubscription: ISubscription
         }
     }
 
-    private static Result<Message> CreateResult(MqttApplicationMessageReceivedEventArgs item)
-    {
-        return new Result<Message>(
-            new Message
-            {
-                Payload = item.ApplicationMessage.PayloadSegment.ToArray(),
-                Topic = new Topic { Path = item.ApplicationMessage.Topic },
-                ResponseTopic = new Topic { Path = item.ApplicationMessage.ResponseTopic, Retain = false }
-            });
-    }
+    private static Result<Message> CreateResult(MqttApplicationMessageReceivedEventArgs item) => new(new Message
+        {
+            Payload = item.ApplicationMessage.PayloadSegment.ToArray(),
+            Topic = new Topic { Path = item.ApplicationMessage.Topic },
+            ResponseTopic = new Topic { Path = item.ApplicationMessage.ResponseTopic, Retain = false }
+        });
 
     private static async Task<MqttApplicationMessageReceivedEventArgs?> GetMessageFromChannelAsync(Channel<MqttApplicationMessageReceivedEventArgs, MqttApplicationMessageReceivedEventArgs> channel, CancellationToken cancellationToken)
     {

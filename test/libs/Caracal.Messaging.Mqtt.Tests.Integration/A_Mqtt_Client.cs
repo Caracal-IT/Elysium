@@ -37,7 +37,7 @@ public sealed class A_Mqtt_Client: IDisposable
 
         await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(1)).WithCancellation(cancellationToken).ConfigureAwait(false))
         {
-            messageFromSubscription = m.Value.Payload.GetString();
+            messageFromSubscription = m.Value!.Payload.GetString();
             break;
         }
         
@@ -77,7 +77,7 @@ public sealed class A_Mqtt_Client: IDisposable
         var responseMsg = string.Empty;
         await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(1)).WithCancellation(cancellationToken).ConfigureAwait(false))
         {
-            responseMsg = $"Response {m.Value.Payload.GetString()}";
+            responseMsg = $"Response {m.Value!.Payload.GetString()}";
             break;
         }
 
@@ -101,7 +101,7 @@ public sealed class A_Mqtt_Client: IDisposable
         var subscriptionResult = await _sut.PublishCommandAsync(message, responseTopic, CancellationToken.None).ConfigureAwait(false);
         using var subscription = subscriptionResult.Value!;
         await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(1)).WithCancellation(cancellationToken).ConfigureAwait(false))
-            return m.Value.Payload.GetString();
+            return m.Value!.Payload.GetString();
         
         return string.Empty;
     }

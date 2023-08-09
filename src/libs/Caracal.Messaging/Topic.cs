@@ -1,6 +1,6 @@
 namespace Caracal.Messaging;
 
-public readonly struct Topic
+public readonly record struct Topic
 {
     public Topic()
     {

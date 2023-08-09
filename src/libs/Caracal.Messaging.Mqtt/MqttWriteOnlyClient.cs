@@ -14,8 +14,7 @@ public sealed class MqttWriteOnlyClient: IWriteOnlyClient
 
     public async Task<Result<bool>> PublishAsync(Message message, CancellationToken cancellationToken = default)
     {
-        var conn = await _connection.ConnectAsync(cancellationToken)
-                                                       .ConfigureAwait(false);
+        var conn = await _connection.ConnectAsync(cancellationToken).ConfigureAwait(false);
 
         if (conn.IsSuccess)
             return await OnSuccess(message, conn.Value!).ConfigureAwait(false);
@@ -26,18 +25,12 @@ public sealed class MqttWriteOnlyClient: IWriteOnlyClient
     private async Task<Result<bool>> OnSuccess(Message message, IConnectionDetails connectionDetails)
     {
         if (connectionDetails is MqttConnectionDetails mqttConnectionDetails)
-        {
-            await mqttConnectionDetails.MqttClient!
-                                       .EnqueueAsync(CreateMessage(message))
-                                       .ConfigureAwait(false);
-        }
+            await mqttConnectionDetails.MqttClient!.EnqueueAsync(CreateMessage(message)).ConfigureAwait(false);
 
         return true;
     }
 
-    private ManagedMqttApplicationMessage CreateMessage(Message message)
-    {
-        var msg = new ManagedMqttApplicationMessage
+    private ManagedMqttApplicationMessage CreateMessage(Message message) => new()
         {
             Id = Guid.NewGuid(),
             ApplicationMessage = new MqttApplicationMessage
@@ -49,9 +42,6 @@ public sealed class MqttWriteOnlyClient: IWriteOnlyClient
                 ResponseTopic = _connection.ConnectionString.ProtocolVersion == MqttProtocolVersion.V500 ?  message.ResponseTopic?.Path : null
             }
         };
-        
-        return msg;
-    }
 
     public void Dispose() => _connection.Dispose();
 }

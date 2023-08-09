@@ -1,6 +1,6 @@
 namespace Caracal.IOT;
 
-public sealed class Response
+public sealed record Response
 {
     public required byte[] Payload { get; init; }
 }

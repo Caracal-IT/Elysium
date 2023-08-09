@@ -28,7 +28,7 @@ public class A_Telemetry_Message_Consumer
     public async Task Should_Publish_Message()
     {
         _context.CancellationToken.Returns(_cancellationToken);
-        _context.Message.Returns(new TelemetryMessage { Payload = "Test Payload".GetBytes() });
+        _context.Message.Returns(new TelemetryMessage("Test Payload".GetBytes()));
         
         await _sut.Consume(_context).ConfigureAwait(false);
         

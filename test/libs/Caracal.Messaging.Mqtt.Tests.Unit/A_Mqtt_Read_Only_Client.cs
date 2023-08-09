@@ -13,7 +13,7 @@ public sealed class A_Mqtt_Read_Only_Client
 {
     private readonly ManagedMqttClientWrapper _client;
     private readonly Topic _topic = new() { Path = "path/test" };
-    private readonly CancellationToken _cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
+    private readonly CancellationToken _cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(2)).Token;
 
     private readonly MqttReadOnlyClient _sut;
     
@@ -68,7 +68,7 @@ public sealed class A_Mqtt_Read_Only_Client
         async Task IterateAsync(StringBuilder output)
         {
             await foreach (var item in result.Value!.GetNextAsync(TimeSpan.FromSeconds(10)).WithCancellation(_cancellationToken).ConfigureAwait(false)) 
-                output.Append(item.Value.Payload.GetString());
+                output.Append(item.Value!.Payload.GetString());
         }
 
         async Task SendMessageAsync()
@@ -129,7 +129,7 @@ public sealed class A_Mqtt_Read_Only_Client
         var received = new StringBuilder();
 
         await foreach (var item in subscription.GetNextAsync(TimeSpan.FromMilliseconds(100)).WithCancellation(cancellationToken).ConfigureAwait(false)) 
-            received.Append(item.Value.Payload.GetString());
+            received.Append(item.Value!.Payload.GetString());
         
         return received.ToString();
     }

@@ -13,7 +13,6 @@ namespace Caracal.Elysium.IOT.Application.Tests.Unit.Producers.Gateway;
 [Trait("Category","Unit")]
 public class A_Gateway_Producer_With_Logger
 {
-    private readonly IBus _bus;
     private readonly IGateway _gateway;
     private readonly MockLogger<GatewayProducerWithLogger> _logger;
     private readonly CancellationTokenSource _cancellationTokenSource = new (TimeSpan.FromSeconds(2));
@@ -23,12 +22,12 @@ public class A_Gateway_Producer_With_Logger
 
     public A_Gateway_Producer_With_Logger()
     {
-        _bus = Substitute.For<IBus>();
+        var bus = Substitute.For<IBus>();
         _gateway = Substitute.For<IGateway>();
         _logger = Substitute.For<MockLogger<GatewayProducerWithLogger>>();
         _cancellationToken = _cancellationTokenSource.Token;
         
-        _sut = new GatewayProducerWithLogger(_logger, _gateway, _bus, 50);
+        _sut = new GatewayProducerWithLogger(_logger, _gateway, bus, 50);
     }
     
     [Fact]

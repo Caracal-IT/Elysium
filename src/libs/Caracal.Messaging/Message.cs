@@ -1,6 +1,6 @@
 namespace Caracal.Messaging;
 
-public readonly struct Message
+public sealed record Message
 {
     public required byte[] Payload { get; init; }
     public required Topic Topic { get; init; }

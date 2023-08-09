@@ -1,6 +1,6 @@
 namespace Caracal.Lang;
 
-public readonly struct Result<T>
+public sealed record Result<T>
 {
     public T? Value { get;  }
     public Exception? Exception { get; }
