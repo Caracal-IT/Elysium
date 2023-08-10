@@ -6,7 +6,6 @@ using Caracal.Elysium.Services.Mocks;
 using Caracal.Elysium.Services.Services;
 using Caracal.IOT;
 using Caracal.Messaging;
-using Caracal.Messaging.Mqtt;
 using Caracal.Messaging.Routing;
 using Caracal.Messaging.Routing.Config;
 using MassTransit;
@@ -34,13 +33,6 @@ builder.Services
        .AddSingleton<IClientBuilder, ClientBuilder>()
        .AddSingleton<IRouter, Router>()
        .AddSingleton<IWriteOnlyClient>(serviceProvider => serviceProvider.GetRequiredService<IRouter>());
-       /*
-       .AddSingleton<IWriteOnlyClient>(_ =>
-       {
-            var connectionString = new MqttConnectionString();
-            var connection = new MqttConnection(connectionString);
-            return new MqttWriteOnlyClient(connection);
-       });*/
 
 builder.Services
        .AddMassTransit(x =>
