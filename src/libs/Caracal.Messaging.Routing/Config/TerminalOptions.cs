@@ -5,6 +5,7 @@ public sealed class TerminalOptions
 {
     public Guid Id { get; init; } = Guid.Empty;
     public string Name { get; init; } = string.Empty;
+    public string Assembly { get; init; } = string.Empty;
     public string Type { get; init; } = string.Empty;
     public bool IsEnabled { get; init; }
     public bool IsDefault { get; init; }

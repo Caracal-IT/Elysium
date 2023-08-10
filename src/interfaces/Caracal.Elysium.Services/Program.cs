@@ -1,16 +1,18 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Security.AccessControl;
 using Caracal.Elysium.IOT.Application.Consumers;
 using Caracal.Elysium.IOT.Application.Producers.Gateway;
+using Caracal.Elysium.Services;
 using Caracal.Elysium.Services.Mocks;
 using Caracal.Elysium.Services.Services;
 using Caracal.IOT;
 using Caracal.Messaging;
 using Caracal.Messaging.Mqtt;
+using Caracal.Messaging.Routing;
 using Caracal.Messaging.Routing.Config;
 using MassTransit;
 using Serilog;
 using Serilog.Enrichers.CallerInfo;
+using IRouter = Caracal.Messaging.Routing.IRouter;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,12 +31,16 @@ builder.Services
        })
        .AddSingleton<IGateway, MockGateway>()
        .AddSingleton<IGatewayProducer, GatewayProducerWithLogger>()
+       .AddSingleton<IClientBuilder, ClientBuilder>()
+       .AddSingleton<IRouter, Router>()
+       .AddSingleton<IWriteOnlyClient>(serviceProvider => serviceProvider.GetRequiredService<IRouter>());
+       /*
        .AddSingleton<IWriteOnlyClient>(_ =>
        {
             var connectionString = new MqttConnectionString();
             var connection = new MqttConnection(connectionString);
             return new MqttWriteOnlyClient(connection);
-       });
+       });*/
 
 builder.Services
        .AddMassTransit(x =>

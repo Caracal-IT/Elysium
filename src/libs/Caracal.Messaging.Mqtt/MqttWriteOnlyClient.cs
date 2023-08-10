@@ -9,6 +9,13 @@ namespace Caracal.Messaging.Mqtt;
 public sealed class MqttWriteOnlyClient: IWriteOnlyClient
 {
     private readonly MqttConnection _connection;
+    private IDictionary<string, string>? _settings;
+
+    public MqttWriteOnlyClient(IDictionary<string, string> settings)
+    {
+        _connection = new MqttConnection(new MqttConnectionString());
+        _settings = settings;
+    }
 
     public MqttWriteOnlyClient(MqttConnection connection) => _connection = connection;
 
