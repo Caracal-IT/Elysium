@@ -22,11 +22,4 @@ public sealed class ClientBuilder: IClientBuilder
         var connection = new MqttConnection(connectionString);
         return new MqttClient(connection);
     }
-
-    
-    public object? GetService(string assembly, string typeName)
-    {
-        Dictionary<string, string> settings = new() { { "host", "localhost" } };
-        return Assembly.Load(assembly).CreateInstance(typeName, true, BindingFlags.CreateInstance, null, new object[]{settings}, null, null);
-    }
 }
