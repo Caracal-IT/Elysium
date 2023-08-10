@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Security.AccessControl;
 using Caracal.Elysium.IOT.Application.Consumers;
 using Caracal.Elysium.IOT.Application.Producers.Gateway;
 using Caracal.Elysium.Services.Mocks;
@@ -6,6 +7,7 @@ using Caracal.Elysium.Services.Services;
 using Caracal.IOT;
 using Caracal.Messaging;
 using Caracal.Messaging.Mqtt;
+using Caracal.Messaging.Routing.Config;
 using MassTransit;
 using Serilog;
 using Serilog.Enrichers.CallerInfo;
@@ -13,24 +15,26 @@ using Serilog.Enrichers.CallerInfo;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddSerilog(cfg =>
-    {
-        cfg.ReadFrom.Configuration(builder.Configuration);
-        cfg.Enrich.WithCallerInfo(
-            includeFileInfo: true, 
-            assemblyPrefix: "Caracal.");
-        cfg.Enrich.WithProperty("AppName", builder.Configuration["AppName"]);
-        cfg.Enrich.WithProperty("HostingLocation", builder.Configuration["HostingLocation"]);
-        cfg.Enrich.FromLogContext();
-    })
-    .AddSingleton<IGateway, MockGateway>()
-    .AddSingleton<IGatewayProducer, GatewayProducerWithLogger>()
-    .AddSingleton<IWriteOnlyClient>(_ =>
-    {
-        var connectionString = new MqttConnectionString();
-        var connection = new MqttConnection(connectionString);
-        return new MqttWriteOnlyClient(connection);
-    });
+       .AddSingleton(GetConfiguration(args))
+       .ConfigureOptions<RoutingOptions>()
+       .AddSerilog(cfg =>
+       {
+            cfg.ReadFrom.Configuration(builder.Configuration);
+            cfg.Enrich.WithCallerInfo(
+                includeFileInfo: true, 
+                assemblyPrefix: "Caracal.");
+            cfg.Enrich.WithProperty("AppName", builder.Configuration["AppName"]);
+            cfg.Enrich.WithProperty("HostingLocation", builder.Configuration["HostingLocation"]);
+            cfg.Enrich.FromLogContext();
+       })
+       .AddSingleton<IGateway, MockGateway>()
+       .AddSingleton<IGatewayProducer, GatewayProducerWithLogger>()
+       .AddSingleton<IWriteOnlyClient>(_ =>
+       {
+            var connectionString = new MqttConnectionString();
+            var connection = new MqttConnection(connectionString);
+            return new MqttWriteOnlyClient(connection);
+       });
 
 builder.Services
        .AddMassTransit(x =>
@@ -50,6 +54,15 @@ app.UseSerilogRequestLogging();
 app.MapGet("/", () => "Hello World!");
 
 app.Run();
+
+static IConfigurationRoot GetConfiguration(string[] args) => 
+    new ConfigurationBuilder()
+        .SetBasePath(Directory.GetCurrentDirectory())
+        .AddJsonFile("appsettings.json", optional: false)
+        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+        .AddEnvironmentVariables()
+        .AddCommandLine(args)
+        .Build();
 
 [ExcludeFromCodeCoverage]
 public partial class Program { }
