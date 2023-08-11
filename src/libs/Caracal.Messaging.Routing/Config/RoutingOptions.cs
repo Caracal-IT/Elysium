@@ -11,7 +11,7 @@ public sealed class RoutingOptions: IConfigureOptions<RoutingOptions>
 
     public RoutingOptions(IConfigurationRoot config) => _config = config;
 
-    public IEnumerable<ClientOptions> Clients { get; init; } = Enumerable.Empty<ClientOptions>();
+    public IEnumerable<ProcessorOptions> Processors { get; init; } = Enumerable.Empty<ProcessorOptions>();
     public IEnumerable<TerminalOptions> Terminals { get; init; } = Enumerable.Empty<TerminalOptions>();
     
     public void Configure(RoutingOptions options) => _config?.GetSection("Routing").Bind(options);

@@ -1,6 +1,6 @@
 namespace Caracal.Messaging.Routing;
 
-public interface IClientBuilder
+public interface IRouteingFactory
 {
     IClient GetClient();
 }

@@ -30,7 +30,7 @@ builder.Services
        })
        .AddSingleton<IGateway, MockGateway>()
        .AddSingleton<IGatewayProducer, GatewayProducerWithLogger>()
-       .AddSingleton<IClientBuilder, ClientBuilder>()
+       .AddSingleton<IRouteingFactory, RouteingFactory2>()
        .AddSingleton<IRouter, Router>()
        .AddSingleton<IWriteOnlyClient>(serviceProvider => serviceProvider.GetRequiredService<IRouter>());
 

@@ -7,13 +7,15 @@ using Microsoft.Extensions.Options;
 
 namespace Caracal.Elysium.Services;
 
-public sealed class ClientBuilder: IClientBuilder
+public sealed class RouteingFactory2: IRouteingFactory
 {
     private readonly IOptions<RoutingOptions> _options;
 
-    public ClientBuilder(IOptions<RoutingOptions> options)
+    public RouteingFactory2(IOptions<RoutingOptions> options)
     {
         _options = options;
+
+        var test = new RouteingFactory(options);
     }
 
     public IClient GetClient()

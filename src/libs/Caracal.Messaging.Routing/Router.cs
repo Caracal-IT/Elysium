@@ -5,10 +5,12 @@ namespace Caracal.Messaging.Routing;
 public sealed class Router : IRouter
 {
     private readonly IClient _client;
-
-    public Router(IClientBuilder clientBuilder)
+    private readonly IRouteingFactory _routeingFactory;
+    
+    public Router(IRouteingFactory routeingFactory)
     {
-        _client = clientBuilder.GetClient();
+        _client = routeingFactory.GetClient();
+        _routeingFactory = routeingFactory;
     }
 
     public void Dispose()
@@ -18,6 +20,7 @@ public sealed class Router : IRouter
 
     public Task<Result<bool>> PublishAsync(Message message, CancellationToken cancellationToken = default)
     {
+        
         return _client.PublishAsync(message, cancellationToken);
     }
 }
