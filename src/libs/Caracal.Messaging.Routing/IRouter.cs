@@ -1,6 +1,3 @@
 namespace Caracal.Messaging.Routing;
 
-public interface IRouter: IWriteOnlyClient
-{
-    
-}
+public interface IRouter: IWriteOnlyClient { }

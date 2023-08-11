@@ -4,23 +4,18 @@ namespace Caracal.Messaging.Routing;
 
 public sealed class Router : IRouter
 {
-    private readonly IClient _client;
     private readonly IRouteingFactory _routeingFactory;
     
-    public Router(IRouteingFactory routeingFactory)
-    {
-        _client = routeingFactory.GetClient();
+    public Router(IRouteingFactory routeingFactory) => 
         _routeingFactory = routeingFactory;
-    }
 
-    public void Dispose()
-    {
-        _client.Dispose();
-    }
+    public void Dispose() { }
 
-    public Task<Result<bool>> PublishAsync(Message message, CancellationToken cancellationToken = default)
+    public async Task<Result<bool>> PublishAsync(Message message, CancellationToken cancellationToken = default)
     {
-        
-        return _client.PublishAsync(message, cancellationToken);
+        foreach (var processor in _routeingFactory.GetProcessors())
+            await processor.ProcessAsync(message, cancellationToken);
+
+        return new Result<bool>(true);
     }
 }

@@ -1,7 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Caracal.Elysium.IOT.Application.Consumers;
 using Caracal.Elysium.IOT.Application.Producers.Gateway;
-using Caracal.Elysium.Services;
 using Caracal.Elysium.Services.Mocks;
 using Caracal.Elysium.Services.Services;
 using Caracal.IOT;
@@ -30,7 +29,7 @@ builder.Services
        })
        .AddSingleton<IGateway, MockGateway>()
        .AddSingleton<IGatewayProducer, GatewayProducerWithLogger>()
-       .AddSingleton<IRouteingFactory, RouteingFactory2>()
+       .AddSingleton<IRouteingFactory, RouteingFactory>()
        .AddSingleton<IRouter, Router>()
        .AddSingleton<IWriteOnlyClient>(serviceProvider => serviceProvider.GetRequiredService<IRouter>());
 
@@ -52,6 +51,7 @@ app.UseSerilogRequestLogging();
 app.MapGet("/", () => "Hello World!");
 
 app.Run();
+return;
 
 static IConfigurationRoot GetConfiguration(string[] args) => 
     new ConfigurationBuilder()

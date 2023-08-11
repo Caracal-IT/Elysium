@@ -6,10 +6,10 @@ namespace Caracal.Messaging.Routing;
 
 public sealed class DefaultProcessor: IProcessor
 {
-    public Guid Id { get; init; }
-    public string Name { get; init; }
-    public bool IsEnabled { get; init; }
-    public bool IsDefault { get; init; }
+    public Guid Id { get; }
+    public string Name { get; }
+    public bool IsEnabled { get; }
+    public bool IsDefault { get; }
     public IEnumerable<ITerminal> Terminals { get; set; } = Enumerable.Empty<ITerminal>();
     
     public DefaultProcessor(ProcessorOptions options)
@@ -20,8 +20,11 @@ public sealed class DefaultProcessor: IProcessor
         IsDefault = options.IsDefault;
     }
     
-    public Task<Result<bool>> ProcessAsync(Message message, CancellationToken cancellationToken = default)
+    public async Task<Result<bool>> ProcessAsync(Message message, CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(new Result<bool>(true));
+        foreach (var terminal in Terminals)
+            await terminal.PublishAsync(message, cancellationToken);
+        
+        return new Result<bool>(true);
     }
 }

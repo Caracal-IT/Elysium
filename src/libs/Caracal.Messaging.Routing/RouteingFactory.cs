@@ -47,8 +47,5 @@ public sealed class RouteingFactory : IRouteingFactory
         }
     }
 
-    public IClient GetClient()
-    {
-        throw new NotImplementedException();
-    }
+    public IEnumerable<IProcessor> GetProcessors() => _processors;
 }
