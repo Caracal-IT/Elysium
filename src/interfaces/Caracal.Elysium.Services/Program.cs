@@ -1,10 +1,13 @@
 using System.Diagnostics.CodeAnalysis;
 using Caracal.Elysium.IOT.Application.Consumers;
+using Caracal.Elysium.IOT.Application.Ingress;
 using Caracal.Elysium.IOT.Application.Producers.Gateway;
 using Caracal.Elysium.Services.Mocks;
 using Caracal.Elysium.Services.Services;
 using Caracal.IOT;
 using Caracal.Messaging;
+using Caracal.Messaging.Ingress;
+using Caracal.Messaging.Ingress.Config;
 using Caracal.Messaging.Routing;
 using Caracal.Messaging.Routing.Config;
 using MassTransit;
@@ -17,6 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
        .AddSingleton(GetConfiguration(args))
        .ConfigureOptions<RoutingOptions>()
+       .ConfigureOptions<IngressOptions>()
        .AddSerilog(cfg =>
        {
             cfg.ReadFrom.Configuration(builder.Configuration);
@@ -27,11 +31,16 @@ builder.Services
             cfg.Enrich.WithProperty("HostingLocation", builder.Configuration["HostingLocation"]);
             cfg.Enrich.FromLogContext();
        })
-       .AddSingleton<IGateway, MockGateway>()
+       .AddSingleton<IGatewayRequest, MockGatewayRequest>()
        .AddSingleton<IGatewayProducer, GatewayProducerWithLogger>()
        .AddSingleton<IRouteingFactory, RouteingFactory>()
        .AddSingleton<IRouter, Router>()
-       .AddSingleton<IWriteOnlyClient>(serviceProvider => serviceProvider.GetRequiredService<IRouter>());
+       .AddSingleton<IWriteOnlyClient>(serviceProvider => serviceProvider.GetRequiredService<IRouter>())
+
+       .AddSingleton<IIngressService, IngressService>()
+       .AddSingleton<IIngressFactory, IngressFactory>()
+       .AddSingleton<IGatewayCommand,MockGatewayCommand>()
+       .AddSingleton<IIngressController, IngressController>();
 
 builder.Services
        .AddMassTransit(x =>
@@ -42,7 +51,8 @@ builder.Services
             });
        });
 
-builder.Services.AddHostedService<DefaultWorkerService>();
+builder.Services.AddHostedService<GatewayProducerWorkerService>();
+builder.Services.AddHostedService<IngressWorkerService>();
 
 var app = builder.Build();
 

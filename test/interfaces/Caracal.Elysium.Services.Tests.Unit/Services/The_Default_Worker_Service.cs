@@ -11,12 +11,12 @@ public class The_Default_Worker_Service
     private readonly IGatewayProducer _gatewayProducer;
     private readonly CancellationToken _cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(2)).Token;
     
-    private readonly DefaultWorkerService _sut;
+    private readonly GatewayProducerWorkerService _sut;
     
     public The_Default_Worker_Service()
     {
         _gatewayProducer = Substitute.For<IGatewayProducer>();
-        _sut = new DefaultWorkerService(_gatewayProducer);
+        _sut = new GatewayProducerWorkerService(_gatewayProducer);
     }
     
     [Fact]

@@ -10,12 +10,12 @@ namespace Caracal.Elysium.IOT.Application.Producers.Gateway;
 public class GatewayProducer: IGatewayProducer
 {
     private readonly short _delay;
-    private readonly IGateway _gateway;
+    private readonly IGatewayRequest _gatewayRequest;
     private readonly IBus _bus;
     
-    public GatewayProducer(IGateway gateway, IBus bus, short delay = 3000)
+    public GatewayProducer(IGatewayRequest gatewayRequest, IBus bus, short delay = 3000)
     {
-        _gateway = gateway;
+        _gatewayRequest = gatewayRequest;
         _bus = bus;
         _delay = delay;
     }
@@ -24,7 +24,7 @@ public class GatewayProducer: IGatewayProducer
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            await HandleResponse(await _gateway.ExecuteAsync(cancellationToken), cancellationToken).ConfigureAwait(false);
+            await HandleResponse(await _gatewayRequest.ExecuteAsync(cancellationToken), cancellationToken).ConfigureAwait(false);
 
             await Task.WhenAny(Task.Delay(_delay, cancellationToken)).ConfigureAwait(false);
         }

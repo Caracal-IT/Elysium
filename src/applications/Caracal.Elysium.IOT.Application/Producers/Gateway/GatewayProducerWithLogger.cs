@@ -12,8 +12,8 @@ public sealed class GatewayProducerWithLogger: GatewayProducer
 {
     private readonly ILogger<GatewayProducerWithLogger> _logger;
 
-    public GatewayProducerWithLogger(ILogger<GatewayProducerWithLogger> logger, IGateway gateway, IBus bus, short delay = 3000) 
-        : base(gateway, bus, delay)  => _logger = logger;
+    public GatewayProducerWithLogger(ILogger<GatewayProducerWithLogger> logger, IGatewayRequest gatewayRequest, IBus bus, short delay = 3000) 
+        : base(gatewayRequest, bus, delay)  => _logger = logger;
 
     public override async Task ExecuteAsync(CancellationToken cancellationToken = default)
     {

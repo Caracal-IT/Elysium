@@ -14,7 +14,7 @@ namespace Caracal.Elysium.IOT.Application.Tests.Unit.Producers.Gateway;
 public class A_Gateway_Producer
 {
     private readonly IBus _bus;
-    private readonly IGateway _gateway;
+    private readonly IGatewayRequest _gatewayRequest;
     private readonly CancellationTokenSource _cancellationTokenSource = new (TimeSpan.FromSeconds(2));
     private readonly CancellationToken _cancellationToken;
 
@@ -23,10 +23,10 @@ public class A_Gateway_Producer
     public A_Gateway_Producer()
     {
         _bus = Substitute.For<IBus>();
-        _gateway = Substitute.For<IGateway>();
+        _gatewayRequest = Substitute.For<IGatewayRequest>();
         _cancellationToken = _cancellationTokenSource.Token;
         
-        _sut = new GatewayProducer(_gateway, _bus, 50);
+        _sut = new GatewayProducer(_gatewayRequest, _bus, 50);
     }
     
     [Fact]
@@ -39,7 +39,7 @@ public class A_Gateway_Producer
         results.Insert(2, Task.FromResult(new Result<Response>(new Exception("Test Error"))));
         _cancellationTokenSource.CancelAfter(TimeSpan.FromMilliseconds(210));
         
-        _gateway.ExecuteAsync(_cancellationToken)
+        _gatewayRequest.ExecuteAsync(_cancellationToken)
                 .Returns(
                     results[0],
                     results[1..].ToArray()

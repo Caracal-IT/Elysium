@@ -55,6 +55,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caracal.Messaging.Routing",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caracal.Messaging.Routing.Tests.Unit", "test\libs\Caracal.Messaging.Routing.Tests.Unit\Caracal.Messaging.Routing.Tests.Unit.csproj", "{8621E3F2-8A19-43C0-8667-E4FC798A1E8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caracal.Messaging.Ingress", "src\libs\Caracal.Messaging.Ingress\Caracal.Messaging.Ingress.csproj", "{B0C7960D-6E9E-465F-9C8D-060DAD53667F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +131,10 @@ Global
 		{8621E3F2-8A19-43C0-8667-E4FC798A1E8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8621E3F2-8A19-43C0-8667-E4FC798A1E8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8621E3F2-8A19-43C0-8667-E4FC798A1E8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0C7960D-6E9E-465F-9C8D-060DAD53667F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0C7960D-6E9E-465F-9C8D-060DAD53667F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0C7960D-6E9E-465F-9C8D-060DAD53667F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0C7960D-6E9E-465F-9C8D-060DAD53667F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -157,6 +163,7 @@ Global
 		{BA6B0FB3-8F1A-4C35-A1BB-399CBA25AB31} = {FFF362C6-6FD3-4DAD-8AD0-614E9A1F264B}
 		{8918091F-29B0-4F3B-9A61-C0BAF10FD4A8} = {8765576F-B9D1-4D96-BA28-0D2383047C20}
 		{8621E3F2-8A19-43C0-8667-E4FC798A1E8F} = {C29CA08D-27B4-4106-A9D4-048DFA156DB7}
+		{B0C7960D-6E9E-465F-9C8D-060DAD53667F} = {8765576F-B9D1-4D96-BA28-0D2383047C20}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0A7188B6-4DE7-4CE2-808E-0234001C8432}

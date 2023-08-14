@@ -54,6 +54,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\applications\Caracal.Elysium.IOT.Application\Caracal.Elysium.IOT.Application.csproj" />
       <ProjectReference Include="..\..\libs\Caracal.IOT\Caracal.IOT.csproj" />
+      <ProjectReference Include="..\..\libs\Caracal.Messaging.Ingress\Caracal.Messaging.Ingress.csproj" />
       <ProjectReference Include="..\..\libs\Caracal.Messaging.Mqtt\Caracal.Messaging.Mqtt.csproj" />
       <ProjectReference Include="..\..\libs\Caracal.Messaging.Routing\Caracal.Messaging.Routing.csproj" />
       <ProjectReference Include="..\..\libs\Caracal.Messaging\Caracal.Messaging.csproj" />
