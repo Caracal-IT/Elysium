@@ -16,6 +16,21 @@ public sealed class MqttClient: IClient
         _writeOnlyClient = new MqttWriteOnlyClient(connection);
     }
 
+    public MqttClient(IReadOnlyDictionary<string, string> settings)
+    {
+        var connectionString = new MqttConnectionString
+        {
+            Host = settings.TryGetValue("Address", out var setting) ? setting : "127.0.0.1",
+            Port = Convert.ToInt32(settings.TryGetValue("Port", out var port) ? port : "1883")
+        };
+        
+        var connection = new MqttConnection(connectionString);
+        
+        _connection = connection;
+        _readOnlyClient = new MqttReadOnlyClient(connection);
+        _writeOnlyClient = new MqttWriteOnlyClient(connection);
+    }
+
     public Task<Result<ISubscription>> SubscribeAsync(Topic topic, CancellationToken cancellationToken = default) =>
         _readOnlyClient.SubscribeAsync(topic, cancellationToken);
     

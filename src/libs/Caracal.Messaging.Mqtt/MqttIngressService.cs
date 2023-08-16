@@ -1,3 +1,4 @@
+using Caracal.Lang;
 using Caracal.Messaging.Ingress;
 using Caracal.Messaging.Ingress.Config;
 
@@ -5,6 +6,8 @@ namespace Caracal.Messaging.Mqtt;
 
 public class MqttIngressService: IIngressService
 {
+    private readonly MqttClient _client;
+    
     public Guid Id { get; }
     public string Name { get; }
     public bool IsEnabled { get; }
@@ -18,10 +21,15 @@ public class MqttIngressService: IIngressService
         IsEnabled = objectOptions.IsEnabled;
         IsDefault = objectOptions.IsDefault;
         Settings = objectOptions.Settings;
+        
+        _client = new MqttClient(Settings);
     }
     
-    public Task<ISubscription> SubscribeAsync(string queueName, CancellationToken cancellationToken = default)
+    public async Task<Result<ISubscription>> SubscribeAsync(string queueName, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var topicString = Settings.TryGetValue("Topic", out var setting) ? setting : "#";
+        var topic = new Topic { Path = topicString };
+        
+        return await _client.SubscribeAsync(topic, cancellationToken).ConfigureAwait(false);
     }
 }

@@ -6,13 +6,13 @@ namespace Caracal.Messaging.Mqtt;
 
 public class MqttTerminal: ITerminal
 {
+    private readonly MqttClient _client;
+    
     public Guid Id { get; }
     public string Name { get; }
     public bool IsEnabled { get; }
     public bool IsDefault { get; }
     public Dictionary<string, string> Settings { get; }
-    
-    private readonly IClient _client;
 
     public MqttTerminal(TerminalObjectOptions objectOptions)
     {
@@ -22,14 +22,7 @@ public class MqttTerminal: ITerminal
         IsDefault = objectOptions.IsDefault;
         Settings = objectOptions.Settings;
         
-        var connectionString = new MqttConnectionString
-        {
-            Host = Settings.TryGetValue("Address", out var setting) ? setting : "127.0.0.1",
-            Port = Convert.ToInt32(Settings.TryGetValue("Port", out var port) ? port : "1883")
-        };
-        
-        var connection = new MqttConnection(connectionString);
-        _client = new MqttClient(connection);
+        _client = new MqttClient(Settings);
     }
     
     public Task<Result<bool>> PublishAsync(Message message, CancellationToken cancellationToken = default) =>
