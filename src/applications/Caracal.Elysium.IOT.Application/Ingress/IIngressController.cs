@@ -1,7 +1,6 @@
 using Caracal.IOT;
 using Caracal.Messaging.Ingress;
 using Microsoft.Extensions.Logging;
-using Serilog;
 
 namespace Caracal.Elysium.IOT.Application.Ingress;
 
