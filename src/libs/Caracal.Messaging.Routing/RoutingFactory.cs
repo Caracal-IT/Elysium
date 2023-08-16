@@ -1,4 +1,4 @@
-using System.Reflection;
+using Caracal.Lang;
 using Caracal.Messaging.Routing.Config;
 using Microsoft.Extensions.Options;
 
@@ -22,11 +22,8 @@ public sealed class RoutingFactory : IRoutingFactory
     {
         foreach (var terminalOptions in _options.Value.Terminals)
         {
-            var type = Assembly.Load(terminalOptions.Assembly).GetType(terminalOptions.Type);
-            if (type == null) continue;
-            
-            var instance = Activator.CreateInstance(type, terminalOptions);
-            if(instance is not ITerminal terminal) continue;
+            var terminal = terminalOptions.CreateObjectFromOption<ITerminal>();
+            if (terminal == null) continue;
             
             _terminals.Add(terminal);
         }
@@ -36,12 +33,9 @@ public sealed class RoutingFactory : IRoutingFactory
     {
         foreach (var processorOptions in _options.Value.Processors)
         {
-            var type = Assembly.Load(processorOptions.Assembly).GetType(processorOptions.Type);
-            if (type == null) continue;
+            var processor = processorOptions.CreateObjectFromOption<IProcessor>();
+            if (processor == null) continue;
             
-            var instance = Activator.CreateInstance(type, processorOptions);
-            if(instance is not IProcessor processor) continue;
-
             processor.Terminals = _terminals.Where(t => processorOptions.Terminals.Contains(t.Id)).ToArray();
             _processors.Add(processor);
         }

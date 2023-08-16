@@ -14,13 +14,13 @@ public class MqttTerminal: ITerminal
     
     private readonly IClient _client;
 
-    public MqttTerminal(TerminalOptions options)
+    public MqttTerminal(TerminalObjectOptions objectOptions)
     {
-        Id = options.Id;
-        Name = options.Name;
-        IsEnabled = options.IsEnabled;
-        IsDefault = options.IsDefault;
-        Settings = options.Settings;
+        Id = objectOptions.Id;
+        Name = objectOptions.Name;
+        IsEnabled = objectOptions.IsEnabled;
+        IsDefault = objectOptions.IsDefault;
+        Settings = objectOptions.Settings;
         
         var connectionString = new MqttConnectionString
         {

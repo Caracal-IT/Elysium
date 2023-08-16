@@ -12,12 +12,12 @@ public sealed class DefaultProcessor: IProcessor
     public bool IsDefault { get; }
     public IEnumerable<ITerminal> Terminals { get; set; } = Enumerable.Empty<ITerminal>();
     
-    public DefaultProcessor(ProcessorOptions options)
+    public DefaultProcessor(ProcessorObjectOptions objectOptions)
     {
-        Id = options.Id;
-        Name = options.Name;
-        IsEnabled = options.IsEnabled;
-        IsDefault = options.IsDefault;
+        Id = objectOptions.Id;
+        Name = objectOptions.Name;
+        IsEnabled = objectOptions.IsEnabled;
+        IsDefault = objectOptions.IsDefault;
     }
     
     public async Task<Result<bool>> ProcessAsync(Message message, CancellationToken cancellationToken = default)

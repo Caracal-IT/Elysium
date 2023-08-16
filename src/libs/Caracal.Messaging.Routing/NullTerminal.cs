@@ -19,12 +19,12 @@ public sealed class NullTerminal: ITerminal
         return Task.FromResult(new Result<bool>(true));
     }
 
-    public NullTerminal(TerminalOptions options)
+    public NullTerminal(TerminalObjectOptions objectOptions)
     {
-        Id = options.Id;
-        Name = options.Name;
-        IsEnabled = options.IsEnabled;
-        IsDefault = options.IsDefault;
-        Settings = options.Settings;
+        Id = objectOptions.Id;
+        Name = objectOptions.Name;
+        IsEnabled = objectOptions.IsEnabled;
+        IsDefault = objectOptions.IsDefault;
+        Settings = objectOptions.Settings;
     }
 }
