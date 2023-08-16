@@ -1,5 +1,7 @@
 using Caracal.IOT;
 using Caracal.Messaging.Ingress;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Caracal.Elysium.IOT.Application.Ingress;
 
@@ -12,21 +14,34 @@ public class IngressController: IIngressController
 {
     private readonly IGatewayCommand _gatewayCommand;
     private readonly IIngressFactory _ingressFactory;
+    private readonly ILogger<IngressController> _logger;
 
-    public IngressController(IGatewayCommand gatewayCommand, IIngressFactory ingressFactory)
+    public IngressController(IGatewayCommand gatewayCommand, IIngressFactory ingressFactory, ILogger<IngressController> logger)
     {
         _gatewayCommand = gatewayCommand;
         _ingressFactory = ingressFactory;
+        _logger = logger;
     }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken = default)
     {
-        var services = _ingressFactory.GetServices();
-        
         while (!cancellationToken.IsCancellationRequested)
         {
+            var tasks = _ingressFactory.GetServices()
+                                       .Select(service => ExecuteAsync(service, cancellationToken))
+                                       .ToList();
+
+            await Task.WhenAll(tasks);
             
-            await Task.Delay(10_000, cancellationToken).ConfigureAwait(false);
+            await Task.Delay(60_000, cancellationToken);
         }
+    }
+    
+    private async Task ExecuteAsync(IIngressService service, CancellationToken cancellationToken = default)
+    {
+        var subscription = await service.SubscribeAsync(cancellationToken).ConfigureAwait(false);
+        
+        await foreach(var msg in subscription.Value!.GetNextAsync(TimeSpan.FromDays(10)).WithCancellation(cancellationToken).ConfigureAwait(false))
+            _logger.LogInformation("Message received: {Message}", msg);
     }
 }

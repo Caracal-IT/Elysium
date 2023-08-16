@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using Caracal.Lang;
 using MQTTnet.Client;
 using System.Threading.Channels;
@@ -70,7 +71,7 @@ public sealed class MqttSubscription: ISubscription
             }
             catch (OperationCanceledException ex) { LastException = ex; break; }
 
-            if (item.ApplicationMessage.Topic != _topic.Path) continue;
+            if (!IsValidTopic(_topic.Path, item.ApplicationMessage.Topic)) continue;
 
             yield return CreateResult(item);
 
@@ -78,6 +79,15 @@ public sealed class MqttSubscription: ISubscription
                 cancellationToken,
                 new CancellationTokenSource(timeoutDuration).Token
             );
+        }
+
+        bool IsValidTopic(string template, string topic)
+        {
+            var regexPattern = template
+                .Replace("+", @"[^/]+")
+                .Replace("#", @".*");
+            
+            return Regex.IsMatch(topic, $"^{regexPattern}$");
         }
     }
 

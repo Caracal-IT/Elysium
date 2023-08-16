@@ -10,5 +10,5 @@ public interface IIngressService
     bool IsDefault { get; }
     Dictionary<string, string> Settings { get; }
     
-    public Task<Result<ISubscription>> SubscribeAsync(string queueName, CancellationToken cancellationToken = default);
+    public Task<Result<ISubscription>> SubscribeAsync(CancellationToken cancellationToken = default);
 }

@@ -25,7 +25,7 @@ public class MqttIngressService: IIngressService
         _client = new MqttClient(Settings);
     }
     
-    public async Task<Result<ISubscription>> SubscribeAsync(string queueName, CancellationToken cancellationToken = default)
+    public async Task<Result<ISubscription>> SubscribeAsync(CancellationToken cancellationToken = default)
     {
         var topicString = Settings.TryGetValue("Topic", out var setting) ? setting : "#";
         var topic = new Topic { Path = topicString };
