@@ -18,6 +18,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\libs\Caracal.ErrorCodes\Caracal.ErrorCodes.csproj" />
       <ProjectReference Include="..\..\libs\Caracal.IOT\Caracal.IOT.csproj" />
+      <ProjectReference Include="..\..\libs\Caracal.Messaging.Ingress\Caracal.Messaging.Ingress.csproj" />
       <ProjectReference Include="..\..\libs\Caracal.Messaging\Caracal.Messaging.csproj" />
       <ProjectReference Include="..\..\libs\Caracal.Text\Caracal.Text.csproj" />
     </ItemGroup>

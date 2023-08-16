@@ -1,4 +1,5 @@
 using Caracal.IOT;
+using Caracal.Messaging.Ingress;
 
 namespace Caracal.Elysium.IOT.Application.Ingress;
 
@@ -10,14 +11,18 @@ public interface IIngressController
 public class IngressController: IIngressController
 {
     private readonly IGatewayCommand _gatewayCommand;
+    private readonly IIngressFactory _ingressFactory;
 
-    public IngressController(IGatewayCommand gatewayCommand)
+    public IngressController(IGatewayCommand gatewayCommand, IIngressFactory ingressFactory)
     {
         _gatewayCommand = gatewayCommand;
+        _ingressFactory = ingressFactory;
     }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken = default)
     {
+        var services = _ingressFactory.GetServices();
+        
         while (!cancellationToken.IsCancellationRequested)
         {
             
@@ -25,5 +30,3 @@ public class IngressController: IIngressController
         }
     }
 }
-
-public interface IDataSource { }  // IReadOnlyClient

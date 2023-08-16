@@ -36,8 +36,7 @@ builder.Services
        .AddSingleton<IRoutingFactory, RoutingFactory>()
        .AddSingleton<IRouter, Router>()
        .AddSingleton<IWriteOnlyClient>(serviceProvider => serviceProvider.GetRequiredService<IRouter>())
-
-       .AddSingleton<IIngressService, IngressService>()
+    
        .AddSingleton<IIngressFactory, IngressFactory>()
        .AddSingleton<IGatewayCommand,MockGatewayCommand>()
        .AddSingleton<IIngressController, IngressController>();

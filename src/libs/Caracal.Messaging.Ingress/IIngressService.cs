@@ -2,10 +2,11 @@ namespace Caracal.Messaging.Ingress;
 
 public interface IIngressService
 {
+    Guid Id { get; }
+    string Name { get; }
+    bool IsEnabled { get; }
+    bool IsDefault { get; }
+    Dictionary<string, string> Settings { get; }
     
-}
-
-public sealed class IngressService : IIngressService
-{
-    
+    public Task<ISubscription> SubscribeAsync(string queueName, CancellationToken cancellationToken = default);
 }

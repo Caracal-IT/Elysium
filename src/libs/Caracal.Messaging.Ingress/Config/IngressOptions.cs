@@ -11,8 +11,8 @@ public sealed class IngressOptions: IConfigureOptions<IngressOptions>
 
     public IngressOptions(IConfigurationRoot config) => _config = config;
     
-    public Guid Id { get; init; } = Guid.Empty;
+    public IEnumerable<IngressServiceOptions> Services { get; init; } = Enumerable.Empty<IngressServiceOptions>();
     
     public void Configure(IngressOptions options)
-        => _config?.GetSection("Routing").Bind(options);
+        => _config?.GetSection("Ingress").Bind(options);
 }

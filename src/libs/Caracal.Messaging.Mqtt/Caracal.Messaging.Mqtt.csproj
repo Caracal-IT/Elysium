@@ -21,6 +21,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Caracal.Lang\Caracal.Lang.csproj" />
+      <ProjectReference Include="..\Caracal.Messaging.Ingress\Caracal.Messaging.Ingress.csproj" />
       <ProjectReference Include="..\Caracal.Messaging.Routing\Caracal.Messaging.Routing.csproj" />
       <ProjectReference Include="..\Caracal.Messaging\Caracal.Messaging.csproj" />
     </ItemGroup>

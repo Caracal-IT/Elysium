@@ -18,6 +18,8 @@ public sealed class RoutingFactory : IRoutingFactory
         InitializeProcessors();
     }
     
+    public IEnumerable<IProcessor> GetProcessors() => _processors;
+    
     private void InitializeTerminals()
     {
         foreach (var terminalOptions in _options.Value.Terminals)
@@ -40,6 +42,4 @@ public sealed class RoutingFactory : IRoutingFactory
             _processors.Add(processor);
         }
     }
-
-    public IEnumerable<IProcessor> GetProcessors() => _processors;
 }
