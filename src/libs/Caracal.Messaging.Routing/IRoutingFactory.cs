@@ -1,6 +1,6 @@
 namespace Caracal.Messaging.Routing;
 
-public interface IRouteingFactory
+public interface IRoutingFactory
 {
     IEnumerable<IProcessor> GetProcessors();
 }

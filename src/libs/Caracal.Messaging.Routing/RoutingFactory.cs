@@ -4,13 +4,13 @@ using Microsoft.Extensions.Options;
 
 namespace Caracal.Messaging.Routing;
 
-public sealed class RouteingFactory : IRouteingFactory
+public sealed class RoutingFactory : IRoutingFactory
 {
     private readonly IOptions<RoutingOptions> _options;
     private readonly List<ITerminal> _terminals = new();
     private readonly List<IProcessor> _processors = new();
 
-    public RouteingFactory(IOptions<RoutingOptions> options)
+    public RoutingFactory(IOptions<RoutingOptions> options)
     {
         _options = options;
 
