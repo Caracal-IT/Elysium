@@ -2,10 +2,23 @@ version: '3.9'
 name: "elysium"
 services:
   caracal.elysium.services:
-    image: ${DOCKER_REGISTRY-}caracalelysiumservices
+    image: ${DOCKER_REGISTRY-}caracal_elysium_services
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    mem_reservation: 200M
     build:
-      context: .
-      dockerfile: ../src/interfaces/Caracal.Elysium.Services/Dockerfile
+      context: ..
+      dockerfile: ./src/interfaces/Caracal.Elysium.Services/Dockerfile
+      args:
+        - PASSWORD_ENV_SEEDED=${PASSWORD_ENV_SEEDED}
+    environment:
+      - PASSWORD_ENV_SEEDED=password1
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password1
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_URLS=https://+;http://+:5000
+      - ASPNETCORE_ENVIRONMENT=Release
    
   hivemq-server:
     image: hivemq/hivemq-ce:latest
