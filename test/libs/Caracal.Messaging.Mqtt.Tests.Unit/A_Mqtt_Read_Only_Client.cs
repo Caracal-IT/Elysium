@@ -32,7 +32,7 @@ public sealed class A_Mqtt_Read_Only_Client
         _client.IsStarted.Returns(false);
         _client.StartAsync(Arg.Any<ManagedMqttClientOptions>()).ThrowsForAnyArgs(new Exception("Connection failed"));
         
-        var result = await _sut.SubscribeAsync(_topic, _cancellationToken).ConfigureAwait(false);
+        var result = await _sut.SubscribeAsync(_topic, _cancellationToken);
         
         result.IsFaulted.Should().BeTrue();
         result.Exception.Should().NotBeNull();
@@ -42,7 +42,7 @@ public sealed class A_Mqtt_Read_Only_Client
     [Fact]
     public async Task Should_Return_Subscription_When_Subscribing()
     {
-        var result = await _sut.SubscribeAsync(_topic, _cancellationToken).ConfigureAwait(false);
+        var result = await _sut.SubscribeAsync(_topic, _cancellationToken);
         
         result.IsFaulted.Should().BeFalse();
         result.Exception.Should().BeNull();
@@ -54,12 +54,11 @@ public sealed class A_Mqtt_Read_Only_Client
     public async Task Should_Iterate_When_Subscribing()
     {
         var received = new StringBuilder();
-        var result = await _sut.SubscribeAsync(_topic, _cancellationToken).ConfigureAwait(false);
+        var result = await _sut.SubscribeAsync(_topic, _cancellationToken);
         
-        await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 1".GetBytes())
-                     .ConfigureAwait(false);
+        await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 1".GetBytes());
 
-        await Task.WhenAll(SendMessageAsync(), IterateAsync(received)).ConfigureAwait(false);
+        await Task.WhenAll(SendMessageAsync(), IterateAsync(received));
         
         result.Value.Should().BeAssignableTo<MqttSubscription>();
         received.ToString().Should().Be("Response 1Response 2");
@@ -74,8 +73,7 @@ public sealed class A_Mqtt_Read_Only_Client
         async Task SendMessageAsync()
         {
             await Task.Delay(100, _cancellationToken);
-            await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 2".GetBytes())
-                         .ConfigureAwait(false);
+            await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 2".GetBytes());
             
             ((MqttSubscription) result.Value!).Channel.Writer.Complete();
         }
@@ -84,23 +82,20 @@ public sealed class A_Mqtt_Read_Only_Client
     [Fact]
     public async Task Should_Remove_Subscription_When_Unsubscribing()
     {
-        var subscriptionResult = await _sut.SubscribeAsync(_topic, _cancellationToken).ConfigureAwait(false);
+        var subscriptionResult = await _sut.SubscribeAsync(_topic, _cancellationToken);
 
-        await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 1".GetBytes())
-                     .ConfigureAwait(false);
+        await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 1".GetBytes());
         
-        await _client.SendApplicationMessageAsync("MockClient", "path/test2", "Response 21".GetBytes())
-                     .ConfigureAwait(false);
+        await _client.SendApplicationMessageAsync("MockClient", "path/test2", "Response 21".GetBytes());
         
         var subscription = subscriptionResult.Value!;
-        var resultsBeforeUnsubscribe = await GetPublishedMessages(subscription, _cancellationToken).ConfigureAwait(false);
+        var resultsBeforeUnsubscribe = await GetPublishedMessages(subscription, _cancellationToken);
         
         await subscription.UnsubscribeAsync();
          
-        await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 1".GetBytes())
-                     .ConfigureAwait(false);
+        await _client.SendApplicationMessageAsync("MockClient", "path/test", "Response 1".GetBytes());
 
-        var resultsAfterUnsubscribe = await GetPublishedMessages(subscription, _cancellationToken).ConfigureAwait(false);
+        var resultsAfterUnsubscribe = await GetPublishedMessages(subscription, _cancellationToken);
         
         resultsBeforeUnsubscribe.Should().Be("Response 1");
         resultsAfterUnsubscribe.Should().BeEmpty();
@@ -121,7 +116,7 @@ public sealed class A_Mqtt_Read_Only_Client
         result.Value!.Dispose();
 
         _client.Events.Should().BeEmpty();
-        await _client.Received(1).UnsubscribeAsync(Arg.Any<string[]>()).ConfigureAwait(false);
+        await _client.Received(1).UnsubscribeAsync(Arg.Any<string[]>());
     }
 
     private static async Task<string> GetPublishedMessages(ISubscription subscription, CancellationToken cancellationToken)

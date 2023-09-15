@@ -48,10 +48,10 @@ public class A_Gateway_Producer
         _bus.Publish(Arg.Is<TelemetryMessage>(m => m.Payload.GetString().StartsWith("Test Telemetry ")), _cancellationToken).Returns(Task.CompletedTask);
         _bus.Publish(Arg.Is<TelemetryErrorMessage>(m => m.Payload.GetString().Equals("Test Error")), _cancellationToken).Returns(Task.CompletedTask);
         
-        await _sut.ExecuteAsync(_cancellationToken).ConfigureAwait(false);
+        await _sut.ExecuteAsync(_cancellationToken);
         
-        await _bus.Received().Publish(Arg.Any<TelemetryMessage>(), _cancellationToken).ConfigureAwait(false);
-        await _bus.Received(1).Publish(Arg.Any<TelemetryErrorMessage>(), _cancellationToken).ConfigureAwait(false);
+        await _bus.Received().Publish(Arg.Any<TelemetryMessage>(), _cancellationToken);
+        await _bus.Received(1).Publish(Arg.Any<TelemetryErrorMessage>(), _cancellationToken);
     }
 
     private static Task<Result<Response>> CreateSuccessResponse(int index)

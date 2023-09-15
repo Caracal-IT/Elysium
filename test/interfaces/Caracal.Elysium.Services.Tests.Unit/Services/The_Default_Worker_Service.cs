@@ -22,9 +22,9 @@ public class The_Default_Worker_Service
     [Fact]
     public async Task Should_Execute_Gateway_Producer()
     {
-        await _sut.StartAsync(_cancellationToken).ConfigureAwait(false);
-        await _sut.StopAsync(_cancellationToken).ConfigureAwait(false);
+        await _sut.StartAsync(_cancellationToken);
+        await _sut.StopAsync(_cancellationToken);
         
-        await _gatewayProducer.Received(1).ExecuteAsync(Arg.Any<CancellationToken>()).ConfigureAwait(false);
+        await _gatewayProducer.Received(1).ExecuteAsync(Arg.Any<CancellationToken>());
     }
 }

@@ -31,8 +31,8 @@ public sealed class A_Mqtt_Client: IDisposable
         var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
         
         //Act
-        var subscriptionResult = await _sut.SubscribeAsync(_topic, cancellationToken).ConfigureAwait(false);
-        await _sut.PublishAsync(_message, cancellationToken).ConfigureAwait(false);
+        var subscriptionResult = await _sut.SubscribeAsync(_topic, cancellationToken);
+        await _sut.PublishAsync(_message, cancellationToken);
         using var subscription = subscriptionResult.Value!;
 
         await foreach (var m in subscription.GetNextAsync(TimeSpan.FromSeconds(1)).WithCancellation(cancellationToken).ConfigureAwait(false))
@@ -54,8 +54,8 @@ public sealed class A_Mqtt_Client: IDisposable
         var commandTask = PublishCommandAsync(requestMessage);
         
         // Act
-        await Task.WhenAll(commandTask, responseTask).ConfigureAwait(false);
-        var response = await commandTask.ConfigureAwait(false);
+        await Task.WhenAll(commandTask, responseTask);
+        var response = await commandTask;
         
         // Assert
         response.Should().Be($"Response {requestMessage}");

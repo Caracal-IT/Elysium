@@ -37,9 +37,9 @@ public class A_Gateway_Producer_With_Logger
                  .Returns(Task.FromResult(new Result<Response>(new Response{ Payload = Array.Empty<byte>() })));
         
         _logger.IsEnabled(LogLevel.Information).Returns(true);
-        await _sut.ExecuteAsync(_cancellationToken).ConfigureAwait(false);
+        await _sut.ExecuteAsync(_cancellationToken);
 
-        await _gatewayRequest.Received().ExecuteAsync(Arg.Any<CancellationToken>()).ConfigureAwait(false);
+        await _gatewayRequest.Received().ExecuteAsync(Arg.Any<CancellationToken>());
         _logger.Received(1).Log(LogLevel.Information, Arg.Is<string>(s => s.Contains("Starting Gateway Producer")));
         _logger.Received(1).Log(LogLevel.Information, Arg.Is<string>(s => s.Contains("Stopping Gateway Producer")));
         _logger.Received().Log(LogLevel.Information, Arg.Is<string>(s => s.Contains("Gateway Response:")));
@@ -52,9 +52,9 @@ public class A_Gateway_Producer_With_Logger
             .Returns(Task.FromResult(new Result<Response>(new Response{ Payload = Array.Empty<byte>() })));
         
         _logger.IsEnabled(LogLevel.Warning).Returns(true);
-        await _sut.ExecuteAsync(_cancellationToken).ConfigureAwait(false);
+        await _sut.ExecuteAsync(_cancellationToken);
 
-        await _gatewayRequest.Received().ExecuteAsync(Arg.Any<CancellationToken>()).ConfigureAwait(false);
+        await _gatewayRequest.Received().ExecuteAsync(Arg.Any<CancellationToken>());
         _logger.DidNotReceive().Log(LogLevel.Information, Arg.Is<string>(s => s.Contains("Starting Gateway Producer")));
         _logger.DidNotReceive().Log(LogLevel.Information, Arg.Is<string>(s => s.Contains("Gateway Producer stopped")));
         _logger.DidNotReceive().Log(LogLevel.Information, Arg.Is<string>(s => s.Contains("Gateway response:")));
@@ -70,9 +70,9 @@ public class A_Gateway_Producer_With_Logger
             .Returns(Task.FromResult(new Result<Response>(new Exception("Mock Error"))));
         
         _logger.IsEnabled(Arg.Is<LogLevel>(level => loglevel <= level)).Returns(true);
-        await _sut.ExecuteAsync(_cancellationToken).ConfigureAwait(false);
+        await _sut.ExecuteAsync(_cancellationToken);
 
-        await _gatewayRequest.Received().ExecuteAsync(Arg.Any<CancellationToken>()).ConfigureAwait(false);
+        await _gatewayRequest.Received().ExecuteAsync(Arg.Any<CancellationToken>());
         _logger.Received().Log(LogLevel.Error, Arg.Is<string>(s => s.Contains("Gateway Error: Mock Error")));
     }
     
@@ -83,9 +83,9 @@ public class A_Gateway_Producer_With_Logger
             .Returns(Task.FromResult(new Result<Response>(new Exception("Mock Error"))));
         
         _logger.IsEnabled(LogLevel.Critical).Returns(true);
-        await _sut.ExecuteAsync(_cancellationToken).ConfigureAwait(false);
+        await _sut.ExecuteAsync(_cancellationToken);
 
-        await _gatewayRequest.Received().ExecuteAsync(Arg.Any<CancellationToken>()).ConfigureAwait(false);
+        await _gatewayRequest.Received().ExecuteAsync(Arg.Any<CancellationToken>());
         _logger.DidNotReceive().Log(LogLevel.Error, Arg.Is<string>(s => s.Contains("Gateway error: Mock Error")));
     }
 }

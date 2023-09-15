@@ -32,7 +32,7 @@ public class A_Mqtt_Connection
         _client.StartAsync(Arg.Any<ManagedMqttClientOptions>())
                .ThrowsForAnyArgs(new Exception("Connection failed"));
         
-        var result = await _sut.ConnectAsync(CancellationToken.None).ConfigureAwait(false);
+        var result = await _sut.ConnectAsync(CancellationToken.None);
         
         result.IsFaulted.Should().BeTrue();
         result.Exception!.Message.Should().Be("Connection failed");
@@ -41,7 +41,7 @@ public class A_Mqtt_Connection
     [Fact]
     public async Task Should_Return_Success_If_Connection_Succeeded()
     {
-        var result = await _sut.ConnectAsync(CancellationToken.None).ConfigureAwait(false);
+        var result = await _sut.ConnectAsync(CancellationToken.None);
         
         result.IsFaulted.Should().BeFalse();
         result.Exception.Should().BeNull();
@@ -61,7 +61,7 @@ public class A_Mqtt_Connection
     public async Task Should_Dispose_Async_And_Wait_For_Pending_Messages()
     {
         _client.PendingApplicationMessagesCount.Returns(2, 1, 0, -1);
-        await _sut.DisposeAsync().ConfigureAwait(false);
+        await _sut.DisposeAsync();
         
         _client.Received(1).Dispose();
         _client.Received(3).PendingApplicationMessagesCount.Should().Be(0);
@@ -71,7 +71,7 @@ public class A_Mqtt_Connection
     public async Task Should_Dispose_Async_And_Wait_For_Pending_Messages_AndStop_After_20_Iterations()
     {
         _client.PendingApplicationMessagesCount.Returns(2);
-        await _sut.DisposeAsync().ConfigureAwait(false);
+        await _sut.DisposeAsync();
         
         _client.Received(1).Dispose();
         _client.Received(20).PendingApplicationMessagesCount.Should().Be(0);
@@ -80,7 +80,7 @@ public class A_Mqtt_Connection
     [Fact]
     public async Task Should_Disconnect_Async_A_Not_Call_Stop_On_Client() {
         _client.IsStarted.Returns(false);
-        await _sut.DisconnectAsync(CancellationToken.None).ConfigureAwait(false);
+        await _sut.DisconnectAsync(CancellationToken.None);
         
         await _client.DidNotReceive().StopAsync();
     }
@@ -91,7 +91,7 @@ public class A_Mqtt_Connection
         _client.IsStarted.Returns(true);
         _client.StopAsync().Returns(Task.CompletedTask);
         _client.PendingApplicationMessagesCount.Returns(2, 1, 0);
-        await _sut.DisconnectAsync(CancellationToken.None).ConfigureAwait(false);
+        await _sut.DisconnectAsync(CancellationToken.None);
         
         await _client.Received(1).StopAsync();
         _client.Received(3).PendingApplicationMessagesCount.Should().Be(0);

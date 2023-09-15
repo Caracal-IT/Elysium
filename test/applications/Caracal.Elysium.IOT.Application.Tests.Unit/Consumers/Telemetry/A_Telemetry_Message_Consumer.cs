@@ -30,9 +30,9 @@ public class A_Telemetry_Message_Consumer
         _context.CancellationToken.Returns(_cancellationToken);
         _context.Message.Returns(new TelemetryMessage("Test Payload".GetBytes()));
         
-        await _sut.Consume(_context).ConfigureAwait(false);
+        await _sut.Consume(_context);
         
-        await _client.Received(1).PublishAsync(Arg.Is<Message>(m => IsValidMessage(m)), _cancellationToken).ConfigureAwait(false);
+        await _client.Received(1).PublishAsync(Arg.Is<Message>(m => IsValidMessage(m)), _cancellationToken);
     }
 
     private static bool IsValidMessage(Message message)
