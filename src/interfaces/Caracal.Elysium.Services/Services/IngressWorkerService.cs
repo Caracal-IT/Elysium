@@ -2,13 +2,8 @@ using Caracal.Elysium.IOT.Application.Ingress;
 
 namespace Caracal.Elysium.Services.Services;
 
-public sealed class IngressWorkerService: BackgroundService
+public sealed class IngressWorkerService(IIngressController ingressController) : BackgroundService
 {
-    private readonly IIngressController _ingressController;
-
-    public IngressWorkerService(IIngressController ingressController) => 
-        _ingressController = ingressController;
-
     protected override Task ExecuteAsync(CancellationToken stoppingToken) =>
-        _ingressController.ExecuteAsync(stoppingToken);
+        ingressController.ExecuteAsync(stoppingToken);
 }

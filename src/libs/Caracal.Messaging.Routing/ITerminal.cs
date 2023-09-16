@@ -1,6 +1,4 @@
-using System.Collections.ObjectModel;
 using Caracal.Lang;
-using Microsoft.Extensions.Options;
 
 namespace Caracal.Messaging.Routing;
 
