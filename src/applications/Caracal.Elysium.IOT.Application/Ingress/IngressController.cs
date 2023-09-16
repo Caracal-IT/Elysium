@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Caracal.Elysium.IOT.Application.Ingress;
 
-public class IngressController(IGatewayCommand gatewayCommand, IIngressFactory ingressFactory, ILogger logger) : IIngressController
+public class IngressController(IGatewayCommand gatewayCommand, IIngressFactory ingressFactory, ILogger<IngressController> logger) : IIngressController
 {
     private readonly IGatewayCommand _gatewayCommand = gatewayCommand;
 

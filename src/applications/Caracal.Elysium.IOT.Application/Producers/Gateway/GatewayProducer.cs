@@ -7,7 +7,7 @@ using Response = Caracal.IOT.Response;
 
 namespace Caracal.Elysium.IOT.Application.Producers.Gateway;
 
-public class GatewayProducer(IGatewayRequest gatewayRequest, IPublishEndpoint bus, short delay = 3000) : IGatewayProducer
+public class GatewayProducer(IGatewayRequest gatewayRequest, IBus bus, short delay = 3000) : IGatewayProducer
 {
     public virtual async Task ExecuteAsync(CancellationToken cancellationToken = default)
     {

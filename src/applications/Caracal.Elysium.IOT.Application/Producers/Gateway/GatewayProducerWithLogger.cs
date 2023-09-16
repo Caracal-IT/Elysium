@@ -8,8 +8,7 @@ using Response = Caracal.IOT.Response;
 
 namespace Caracal.Elysium.IOT.Application.Producers.Gateway;
 
-public sealed class GatewayProducerWithLogger(ILogger<GatewayProducerWithLogger> logger, IGatewayRequest gatewayRequest, IPublishEndpoint bus,
-        short delay = 3000)
+public sealed class GatewayProducerWithLogger(ILogger<GatewayProducerWithLogger> logger, IGatewayRequest gatewayRequest, IBus bus, short delay = 3000)
     : GatewayProducer(gatewayRequest, bus, delay)
 {
     public override async Task ExecuteAsync(CancellationToken cancellationToken = default)
