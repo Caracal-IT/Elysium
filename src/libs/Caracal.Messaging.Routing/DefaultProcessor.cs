@@ -15,7 +15,7 @@ public sealed class DefaultProcessor(ProcessorObjectOptions objectOptions) : IPr
     {
         foreach (var terminal in Terminals)
             await terminal.PublishAsync(message, cancellationToken);
-        
+
         return new Result<bool>(true);
     }
 }

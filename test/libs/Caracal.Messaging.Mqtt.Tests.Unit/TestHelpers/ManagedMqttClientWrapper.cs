@@ -3,6 +3,7 @@ using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Extensions.ManagedClient;
 using MQTTnet.Packets;
+
 // ReSharper disable HeapView.ObjectAllocation.Possible
 // ReSharper disable ClassNeverInstantiated.Global
 
@@ -13,22 +14,19 @@ public class ManagedMqttClientWrapper : IManagedMqttClient
 {
     private readonly IManagedMqttClient _managedMqttClientImplementation;
     internal readonly List<Func<MqttApplicationMessageReceivedEventArgs, Task>> Events = new();
-    
-    public async Task SendApplicationMessageAsync(string clientId, string topic, byte[] payload)
+
+    public ManagedMqttClientWrapper(IManagedMqttClient managedMqttClientImplementation)
     {
-        var args = CreateEventArgs(clientId, topic, payload);
-        
-        foreach (var eventHandler in Events)
-            await eventHandler(args);
+        _managedMqttClientImplementation = managedMqttClientImplementation;
     }
-    
+
     public event Func<MqttApplicationMessageReceivedEventArgs, Task>? ApplicationMessageReceivedAsync
     {
         add
-        {  
-            if(value != null)
+        {
+            if (value != null)
                 Events.Add(value);
-            
+
             _managedMqttClientImplementation.ApplicationMessageReceivedAsync += value;
         }
         remove
@@ -43,36 +41,46 @@ public class ManagedMqttClientWrapper : IManagedMqttClient
             _managedMqttClientImplementation.ApplicationMessageReceivedAsync -= value;
         }
     }
-    
-    private static MqttApplicationMessageReceivedEventArgs CreateEventArgs(string clientId, string topic, byte[] payload) =>
-        new(
-            clientId,
-            new MqttApplicationMessage{ Topic = topic,PayloadSegment = payload },
-            new MqttPublishPacket(),
-            null);      
 
-    public ManagedMqttClientWrapper(IManagedMqttClient managedMqttClientImplementation) =>
-        _managedMqttClientImplementation = managedMqttClientImplementation;
+    public void Dispose()
+    {
+        _managedMqttClientImplementation.Dispose();
+    }
 
-    public void Dispose() => _managedMqttClientImplementation.Dispose();
+    public Task EnqueueAsync(MqttApplicationMessage applicationMessage)
+    {
+        return _managedMqttClientImplementation.EnqueueAsync(applicationMessage);
+    }
 
-    public Task EnqueueAsync(MqttApplicationMessage applicationMessage) =>
-        _managedMqttClientImplementation.EnqueueAsync(applicationMessage);
+    public Task EnqueueAsync(ManagedMqttApplicationMessage applicationMessage)
+    {
+        return _managedMqttClientImplementation.EnqueueAsync(applicationMessage);
+    }
 
-    public Task EnqueueAsync(ManagedMqttApplicationMessage applicationMessage) =>
-        _managedMqttClientImplementation.EnqueueAsync(applicationMessage);
+    public Task PingAsync(CancellationToken cancellationToken = new())
+    {
+        return _managedMqttClientImplementation.PingAsync(cancellationToken);
+    }
 
-    public Task PingAsync(CancellationToken cancellationToken = new()) =>
-        _managedMqttClientImplementation.PingAsync(cancellationToken);
+    public Task StartAsync(ManagedMqttClientOptions options)
+    {
+        return _managedMqttClientImplementation.StartAsync(options);
+    }
 
-    public Task StartAsync(ManagedMqttClientOptions options) => _managedMqttClientImplementation.StartAsync(options);
-    public Task StopAsync(bool cleanDisconnect = true) => _managedMqttClientImplementation.StopAsync(cleanDisconnect);
+    public Task StopAsync(bool cleanDisconnect = true)
+    {
+        return _managedMqttClientImplementation.StopAsync(cleanDisconnect);
+    }
 
-    public Task SubscribeAsync(ICollection<MqttTopicFilter> topicFilters) =>
-        _managedMqttClientImplementation.SubscribeAsync(topicFilters);
+    public Task SubscribeAsync(ICollection<MqttTopicFilter> topicFilters)
+    {
+        return _managedMqttClientImplementation.SubscribeAsync(topicFilters);
+    }
 
-    public Task UnsubscribeAsync(ICollection<string> topics) =>
-        _managedMqttClientImplementation.UnsubscribeAsync(topics);
+    public Task UnsubscribeAsync(ICollection<string> topics)
+    {
+        return _managedMqttClientImplementation.UnsubscribeAsync(topics);
+    }
 
     public IMqttClient InternalClient => _managedMqttClientImplementation.InternalClient;
     public bool IsConnected => _managedMqttClientImplementation.IsConnected;
@@ -123,5 +131,22 @@ public class ManagedMqttClientWrapper : IManagedMqttClient
     {
         add => _managedMqttClientImplementation.SynchronizingSubscriptionsFailedAsync += value;
         remove => _managedMqttClientImplementation.SynchronizingSubscriptionsFailedAsync -= value;
+    }
+
+    public async Task SendApplicationMessageAsync(string clientId, string topic, byte[] payload)
+    {
+        var args = CreateEventArgs(clientId, topic, payload);
+
+        foreach (var eventHandler in Events)
+            await eventHandler(args);
+    }
+
+    private static MqttApplicationMessageReceivedEventArgs CreateEventArgs(string clientId, string topic, byte[] payload)
+    {
+        return new MqttApplicationMessageReceivedEventArgs(
+            clientId,
+            new MqttApplicationMessage { Topic = topic, PayloadSegment = payload },
+            new MqttPublishPacket(),
+            null);
     }
 }

@@ -7,20 +7,20 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Caracal.Lang\Caracal.Lang.csproj" />
+        <ProjectReference Include="..\Caracal.Lang\Caracal.Lang.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="Caracal.Messaging.Mqtt" />
-        <InternalsVisibleTo Include="Caracal.Messaging.Mqtt.Tests.Unit" />
+        <InternalsVisibleTo Include="Caracal.Messaging.Mqtt"/>
+        <InternalsVisibleTo Include="Caracal.Messaging.Mqtt.Tests.Unit"/>
     </ItemGroup>
 
 </Project>

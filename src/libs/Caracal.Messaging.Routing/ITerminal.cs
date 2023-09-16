@@ -9,6 +9,6 @@ public interface ITerminal
     bool IsEnabled { get; }
     bool IsDefault { get; }
     Dictionary<string, string> Settings { get; }
-    
+
     Task<Result<bool>> PublishAsync(Message message, CancellationToken cancellationToken = default);
 }

@@ -18,7 +18,7 @@
         </websocket-listener>
         <tls-tcp-listener>
             <port>8883</port>
-            <bind-address>0.0.0.0</bind-address>            
+            <bind-address>0.0.0.0</bind-address>
             <tls>
                 <keystore>
                     <path>/certs/hivemq.jks</path>

@@ -1,4 +1,5 @@
 ﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
+
 namespace Caracal.Text.Tests.Unit.Models;
 
 public sealed class Address

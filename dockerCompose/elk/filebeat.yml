@@ -7,7 +7,7 @@ filebeat.inputs:
     ignore_older: 5m
 
   - type: mqtt
-    tags: ["json"]
+    tags: [ "json" ]
     fields:
       app_name: Caracal MQTT
     qos: 1
@@ -30,4 +30,4 @@ filebeat.inputs:
 
 
 output.logstash:
-  hosts: ["logstash:5044"]
+  hosts: [ "logstash:5044" ]

@@ -10,19 +10,19 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="7.0.0-alpha.1" />
-        <PackageReference Include="MassTransit.Abstractions" Version="8.1.1-develop.1541" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0-preview-23424-02" />
-        <PackageReference Include="NSubstitute" Version="5.1.0" />
-        <PackageReference Include="xunit" Version="2.5.1-pre.33" />
+        <PackageReference Include="FluentAssertions" Version="7.0.0-alpha.1"/>
+        <PackageReference Include="MassTransit.Abstractions" Version="8.1.1-develop.1541"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0-preview-23424-02"/>
+        <PackageReference Include="NSubstitute" Version="5.1.0"/>
+        <PackageReference Include="xunit" Version="2.5.1-pre.33"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.5.1-pre.15">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
@@ -35,12 +35,9 @@
 
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\src\applications\Caracal.Elysium.IOT.Application\Caracal.Elysium.IOT.Application.csproj" />
-      <ProjectReference Include="..\..\..\src\libs\Caracal.IOT\Caracal.IOT.csproj" />
+        <ProjectReference Include="..\..\..\src\applications\Caracal.Elysium.IOT.Application\Caracal.Elysium.IOT.Application.csproj"/>
+        <ProjectReference Include="..\..\..\src\libs\Caracal.IOT\Caracal.IOT.csproj"/>
     </ItemGroup>
-
-
-
 
 
 </Project>

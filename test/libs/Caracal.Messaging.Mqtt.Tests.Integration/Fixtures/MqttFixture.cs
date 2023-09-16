@@ -4,10 +4,10 @@ using DotNet.Testcontainers.Containers;
 namespace Caracal.Messaging.Mqtt.Tests.Integration.Fixtures;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public class MqttFixture: IAsyncLifetime
+public class MqttFixture : IAsyncLifetime
 {
     private IContainer _container = null!;
-    
+
     public async Task InitializeAsync()
     {
         _container = new ContainerBuilder()
@@ -20,17 +20,17 @@ public class MqttFixture: IAsyncLifetime
             })
             .Build();
 
-       await _container.StartAsync().ConfigureAwait(false);
+        await _container.StartAsync().ConfigureAwait(false);
 
-       string output;
-       string error;
-       
-       do
-       {
-           (output, error) = await _container.GetLogsAsync().ConfigureAwait(false);
+        string output;
+        string error;
 
-           await Task.Delay(100).ConfigureAwait(false);
-       } while (string.IsNullOrWhiteSpace(error) && !output.Contains("Started HiveMQ", StringComparison.InvariantCultureIgnoreCase));
+        do
+        {
+            (output, error) = await _container.GetLogsAsync().ConfigureAwait(false);
+
+            await Task.Delay(100).ConfigureAwait(false);
+        } while (string.IsNullOrWhiteSpace(error) && !output.Contains("Started HiveMQ", StringComparison.InvariantCultureIgnoreCase));
     }
 
     public async Task DisposeAsync()

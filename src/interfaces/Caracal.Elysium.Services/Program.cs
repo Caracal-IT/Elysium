@@ -18,37 +18,34 @@ using IRouter = Caracal.Messaging.Routing.IRouter;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-       .AddSingleton(GetConfiguration(args))
-       .ConfigureOptions<RoutingOptions>()
-       .ConfigureOptions<IngressOptions>()
-       .AddSerilog(cfg =>
-       {
-            cfg.ReadFrom.Configuration(builder.Configuration);
-            cfg.Enrich.WithCallerInfo(
-                includeFileInfo: true, 
-                assemblyPrefix: "Caracal.");
-            cfg.Enrich.WithProperty("AppName", builder.Configuration["AppName"]);
-            cfg.Enrich.WithProperty("HostingLocation", builder.Configuration["HostingLocation"]);
-            cfg.Enrich.FromLogContext();
-       })
-       .AddSingleton<IGatewayRequest, MockGatewayRequest>()
-       .AddSingleton<IGatewayProducer, GatewayProducerWithLogger>()
-       .AddSingleton<IRoutingFactory, RoutingFactory>()
-       .AddSingleton<IRouter, Router>()
-       .AddSingleton<IWriteOnlyClient>(serviceProvider => serviceProvider.GetRequiredService<IRouter>())
-    
-       .AddSingleton<IIngressFactory, IngressFactory>()
-       .AddSingleton<IGatewayCommand,MockGatewayCommand>()
-       .AddSingleton<IIngressController, IngressController>();
+    .AddSingleton(GetConfiguration(args))
+    .ConfigureOptions<RoutingOptions>()
+    .ConfigureOptions<IngressOptions>()
+    .AddSerilog(cfg =>
+    {
+        cfg.ReadFrom.Configuration(builder.Configuration);
+        cfg.Enrich.WithCallerInfo(
+            true,
+            "Caracal.");
+        cfg.Enrich.WithProperty("AppName", builder.Configuration["AppName"]);
+        cfg.Enrich.WithProperty("HostingLocation", builder.Configuration["HostingLocation"]);
+        cfg.Enrich.FromLogContext();
+    })
+    .AddSingleton<IGatewayRequest, MockGatewayRequest>()
+    .AddSingleton<IGatewayProducer, GatewayProducerWithLogger>()
+    .AddSingleton<IRoutingFactory, RoutingFactory>()
+    .AddSingleton<IRouter, Router>()
+    .AddSingleton<IWriteOnlyClient>(serviceProvider => serviceProvider.GetRequiredService<IRouter>())
+    .AddSingleton<IIngressFactory, IngressFactory>()
+    .AddSingleton<IGatewayCommand, MockGatewayCommand>()
+    .AddSingleton<IIngressController, IngressController>();
 
 builder.Services
-       .AddMassTransit(x =>
-       {
-            x.AddConsumers(typeof(IConsumerMarker).Assembly);
-            x.UsingInMemory((context, cfg) => {
-                cfg.ConfigureEndpoints(context);
-            });
-       });
+    .AddMassTransit(x =>
+    {
+        x.AddConsumers(typeof(IConsumerMarker).Assembly);
+        x.UsingInMemory((context, cfg) => { cfg.ConfigureEndpoints(context); });
+    });
 
 builder.Services.AddHostedService<GatewayProducerWorkerService>();
 builder.Services.AddHostedService<IngressWorkerService>();
@@ -62,14 +59,18 @@ app.MapGet("/", () => "Hello World!");
 app.Run();
 return;
 
-static IConfigurationRoot GetConfiguration(string[] args) => 
-    new ConfigurationBuilder()
+static IConfigurationRoot GetConfiguration(string[] args)
+{
+    return new ConfigurationBuilder()
         .SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json", optional: false)
-        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+        .AddJsonFile("appsettings.json", false)
+        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
         .AddEnvironmentVariables()
         .AddCommandLine(args)
         .Build();
+}
 
 [ExcludeFromCodeCoverage]
-public partial class Program { }
+public partial class Program
+{
+}

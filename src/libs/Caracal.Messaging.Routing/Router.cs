@@ -4,7 +4,9 @@ namespace Caracal.Messaging.Routing;
 
 public sealed class Router(IRoutingFactory routingFactory) : IRouter
 {
-    public void Dispose() { }
+    public void Dispose()
+    {
+    }
 
     public async Task<Result<bool>> PublishAsync(Message message, CancellationToken cancellationToken = default)
     {

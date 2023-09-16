@@ -1,3 +1,5 @@
 namespace Caracal.Messaging;
 
-public interface IConnectionDetails { }
+public interface IConnectionDetails
+{
+}

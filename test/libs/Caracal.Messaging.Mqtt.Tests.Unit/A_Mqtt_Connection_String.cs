@@ -5,7 +5,7 @@ using MQTTnet.Formatter;
 
 namespace Caracal.Messaging.Mqtt.Tests.Unit;
 
-[Trait("Category","Unit")]
+[Trait("Category", "Unit")]
 public class A_Mqtt_Connection_String
 {
     [Fact]
@@ -18,7 +18,7 @@ public class A_Mqtt_Connection_String
         connectionString.ClientId.Should().NotBeNullOrEmpty();
         connectionString.ClientId.Should().NotBeNullOrEmpty();
     }
-    
+
     [Fact]
     public void Should_Be_Able_To_Change_Defaults()
     {
@@ -34,7 +34,7 @@ public class A_Mqtt_Connection_String
         connectionString.Port.Should().Be(1234);
         connectionString.ClientId.Should().Be("test");
     }
-    
+
     [Fact]
     public void Should_Build_Valid_Connection_String()
     {
@@ -53,7 +53,7 @@ public class A_Mqtt_Connection_String
         options.ClientOptions.ChannelOptions.Should().NotBeNull();
         options.ClientOptions.ChannelOptions.Should().BeOfType<MqttClientTcpOptions>();
         options.ClientOptions.ChannelOptions.Should().BeOfType<MqttClientTcpOptions>();
-        ((MqttClientTcpOptions) options.ClientOptions.ChannelOptions).Port.Should().Be(1234);
-        ((MqttClientTcpOptions) options.ClientOptions.ChannelOptions).Server.Should().Be("test");
+        ((MqttClientTcpOptions)options.ClientOptions.ChannelOptions).Port.Should().Be(1234);
+        ((MqttClientTcpOptions)options.ClientOptions.ChannelOptions).Server.Should().Be("test");
     }
 }

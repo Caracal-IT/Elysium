@@ -8,9 +8,9 @@ public static class DynamicObjectOptionExtensions
     {
         var type = Assembly.Load(processorObjectOptions.Assembly).GetType(processorObjectOptions.Type);
         if (type == null) return default;
-            
+
         var instance = Activator.CreateInstance(type, processorObjectOptions);
-        
+
         return instance is not T item ? default : item;
     }
 }

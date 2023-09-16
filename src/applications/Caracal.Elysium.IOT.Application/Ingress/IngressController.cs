@@ -18,7 +18,7 @@ public class IngressController(IGatewayCommand gatewayCommand, IIngressFactory i
                 .ToList();
 
             await Task.WhenAll(tasks);
-            
+
             await Task.Delay(60_000, cancellationToken);
         }
     }

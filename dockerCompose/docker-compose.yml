@@ -19,7 +19,7 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
       - ASPNETCORE_URLS=https://+;http://+:5000
       - ASPNETCORE_ENVIRONMENT=Release
-   
+  
   hivemq-server:
     image: hivemq/hivemq-ce:latest
     container_name: hivemq-server

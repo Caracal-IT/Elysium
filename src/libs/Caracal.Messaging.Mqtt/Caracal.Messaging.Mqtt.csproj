@@ -7,27 +7,27 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="Caracal.Messaging.Mqtt.Tests.Unit" />
-        <InternalsVisibleTo Include="Caracal.Messaging.Mqtt.Tests.Integration" />
+        <InternalsVisibleTo Include="Caracal.Messaging.Mqtt.Tests.Unit"/>
+        <InternalsVisibleTo Include="Caracal.Messaging.Mqtt.Tests.Integration"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Caracal.Lang\Caracal.Lang.csproj" />
-      <ProjectReference Include="..\Caracal.Messaging.Ingress\Caracal.Messaging.Ingress.csproj" />
-      <ProjectReference Include="..\Caracal.Messaging.Routing\Caracal.Messaging.Routing.csproj" />
-      <ProjectReference Include="..\Caracal.Messaging\Caracal.Messaging.csproj" />
+        <ProjectReference Include="..\Caracal.Lang\Caracal.Lang.csproj"/>
+        <ProjectReference Include="..\Caracal.Messaging.Ingress\Caracal.Messaging.Ingress.csproj"/>
+        <ProjectReference Include="..\Caracal.Messaging.Routing\Caracal.Messaging.Routing.csproj"/>
+        <ProjectReference Include="..\Caracal.Messaging\Caracal.Messaging.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MQTTnet" Version="4.3.1.873" />
-      <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.3.1.873" />
+        <PackageReference Include="MQTTnet" Version="4.3.1.873"/>
+        <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.3.1.873"/>
     </ItemGroup>
 </Project>

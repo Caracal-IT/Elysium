@@ -4,6 +4,8 @@ namespace Caracal.Elysium.Services.Services;
 
 public sealed class IngressWorkerService(IIngressController ingressController) : BackgroundService
 {
-    protected override Task ExecuteAsync(CancellationToken stoppingToken) =>
-        ingressController.ExecuteAsync(stoppingToken);
+    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        return ingressController.ExecuteAsync(stoppingToken);
+    }
 }

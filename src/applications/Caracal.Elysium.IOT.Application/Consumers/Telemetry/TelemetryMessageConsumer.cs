@@ -4,11 +4,14 @@ using MassTransit;
 
 namespace Caracal.Elysium.IOT.Application.Consumers.Telemetry;
 
-public sealed class TelemetryMessageConsumer: IConsumer<TelemetryMessage>
+public sealed class TelemetryMessageConsumer : IConsumer<TelemetryMessage>
 {
     private readonly IWriteOnlyClient _client;
 
-    public TelemetryMessageConsumer(IWriteOnlyClient client) => _client = client;
+    public TelemetryMessageConsumer(IWriteOnlyClient client)
+    {
+        _client = client;
+    }
 
     public async Task Consume(ConsumeContext<TelemetryMessage> context)
     {
@@ -22,7 +25,7 @@ public sealed class TelemetryMessageConsumer: IConsumer<TelemetryMessage>
             },
             Payload = context.Message.Payload
         };
-        
+
         await _client.PublishAsync(message, context.CancellationToken).ConfigureAwait(false);
     }
 }

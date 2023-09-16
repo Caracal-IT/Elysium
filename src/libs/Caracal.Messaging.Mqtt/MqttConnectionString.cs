@@ -12,11 +12,14 @@ public sealed class MqttConnectionString
 
     public MqttProtocolVersion ProtocolVersion { get; init; } = MqttProtocolVersion.V500;
 
-    public ManagedMqttClientOptions Build() => new ManagedMqttClientOptionsBuilder()
-        .WithClientOptions(new MqttClientOptionsBuilder()
-            .WithProtocolVersion(ProtocolVersion)
-            .WithClientId(ClientId)
-            .WithTcpServer(Host, Port)
-            .Build())
-        .Build();
+    public ManagedMqttClientOptions Build()
+    {
+        return new ManagedMqttClientOptionsBuilder()
+            .WithClientOptions(new MqttClientOptionsBuilder()
+                .WithProtocolVersion(ProtocolVersion)
+                .WithClientId(ClientId)
+                .WithTcpServer(Host, Port)
+                .Build())
+            .Build();
+    }
 }

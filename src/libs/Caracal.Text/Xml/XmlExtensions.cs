@@ -6,27 +6,29 @@ namespace Caracal.Text.Xml;
 
 public static class XmlExtensions
 {
-    public static string ToXml(this object obj) {
+    public static string ToXml(this object obj)
+    {
         var ns = new XmlSerializerNamespaces();
         ns.Add(string.Empty, string.Empty);
-        
+
         var serializer = new XmlSerializer(obj.GetType());
         using var writer = new StringWriter();
         serializer.Serialize(writer, obj, ns);
-        
+
         return writer.ToString();
     }
-    
-    public static T FromXml<T>(this string xml) {
+
+    public static T FromXml<T>(this string xml)
+    {
         var serializer = new XmlSerializer(typeof(T));
         using var reader = new StringReader(xml);
-        return (T) serializer.Deserialize(reader)! ?? throw new XmlException();
+        return (T)serializer.Deserialize(reader)! ?? throw new XmlException();
     }
-    
+
     public static string ToXmlFromJson(this string json, string rootElement = "root")
     {
         var jsonString = $"{{\"{rootElement}\":{json}}}";
         var xmlDoc = JsonConvert.DeserializeXmlNode(jsonString);
-        return xmlDoc?.OuterXml??string.Empty;
+        return xmlDoc?.OuterXml ?? string.Empty;
     }
 }

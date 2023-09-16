@@ -1,33 +1,30 @@
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading.Channels;
 using Caracal.Lang;
 using MQTTnet.Client;
-using System.Threading.Channels;
 using MQTTnet.Packets;
 using MQTTnet.Protocol;
 
 namespace Caracal.Messaging.Mqtt;
 
-public sealed class MqttSubscription: ISubscription
+public sealed class MqttSubscription : ISubscription
 {
+    private readonly CancellationToken _cancellationToken;
     private readonly MqttConnectionDetails _connectionDetails;
     private readonly Topic _topic;
     internal readonly Channel<MqttApplicationMessageReceivedEventArgs> Channel;
-    private readonly CancellationToken _cancellationToken;
-
-    public Exception? LastException { get; private set; }
 
     internal MqttSubscription(MqttConnectionDetails connectionDetails, Topic topic, CancellationToken cancellationToken = default)
     {
         _connectionDetails = connectionDetails;
         _topic = topic;
         _cancellationToken = cancellationToken;
-        
+
         Channel = System.Threading.Channels.Channel.CreateUnbounded<MqttApplicationMessageReceivedEventArgs>();
     }
 
-    private async Task OnApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs arg) => 
-        await Channel.Writer.WriteAsync(arg, _cancellationToken);
+    public Exception? LastException { get; private set; }
 
     public async IAsyncEnumerable<Result<Message>> GetNextAsync(TimeSpan timeoutDuration)
     {
@@ -40,12 +37,17 @@ public sealed class MqttSubscription: ISubscription
         _connectionDetails.MqttClient!.ApplicationMessageReceivedAsync -= OnApplicationMessageReceivedAsync;
         await _connectionDetails.MqttClient!.UnsubscribeAsync(new List<string> { _topic.Path });
     }
-    
+
     public void Dispose()
     {
         _connectionDetails.MqttClient!.ApplicationMessageReceivedAsync -= OnApplicationMessageReceivedAsync;
         Channel.Writer.TryComplete();
         _connectionDetails.Dispose();
+    }
+
+    private async Task OnApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs arg)
+    {
+        await Channel.Writer.WriteAsync(arg, _cancellationToken);
     }
 
     internal async Task SubscribeToTopicsAsync()
@@ -57,10 +59,13 @@ public sealed class MqttSubscription: ISubscription
         })).ConfigureAwait(false);
     }
 
-    private async IAsyncEnumerable<Result<Message>> GetMessagesFromChannelAsync(Channel<MqttApplicationMessageReceivedEventArgs, MqttApplicationMessageReceivedEventArgs> channel, TimeSpan timeoutDuration, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    private async IAsyncEnumerable<Result<Message>> GetMessagesFromChannelAsync(
+        Channel<MqttApplicationMessageReceivedEventArgs, MqttApplicationMessageReceivedEventArgs> channel, TimeSpan timeoutDuration,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var combinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, new CancellationTokenSource(timeoutDuration).Token);
-        
+        var combinedCancellationTokenSource =
+            CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, new CancellationTokenSource(timeoutDuration).Token);
+
         while (!cancellationToken.IsCancellationRequested)
         {
             MqttApplicationMessageReceivedEventArgs? item;
@@ -69,7 +74,11 @@ public sealed class MqttSubscription: ISubscription
                 item = await GetMessageFromChannelAsync(channel, combinedCancellationTokenSource.Token).ConfigureAwait(false);
                 if (item is null) break;
             }
-            catch (OperationCanceledException ex) { LastException = ex; break; }
+            catch (OperationCanceledException ex)
+            {
+                LastException = ex;
+                break;
+            }
 
             if (!IsValidTopic(_topic.Path, item.ApplicationMessage.Topic)) continue;
 
@@ -86,23 +95,27 @@ public sealed class MqttSubscription: ISubscription
             var regexPattern = template
                 .Replace("+", @"[^/]+")
                 .Replace("#", @".*");
-            
+
             return Regex.IsMatch(topic, $"^{regexPattern}$");
         }
     }
 
-    private static Result<Message> CreateResult(MqttApplicationMessageReceivedEventArgs item) => new(new Message
+    private static Result<Message> CreateResult(MqttApplicationMessageReceivedEventArgs item)
+    {
+        return new Result<Message>(new Message
         {
             Payload = item.ApplicationMessage.PayloadSegment.ToArray(),
             Topic = new Topic { Path = item.ApplicationMessage.Topic },
             ResponseTopic = new Topic { Path = item.ApplicationMessage.ResponseTopic, Retain = false }
         });
+    }
 
-    private static async Task<MqttApplicationMessageReceivedEventArgs?> GetMessageFromChannelAsync(Channel<MqttApplicationMessageReceivedEventArgs, MqttApplicationMessageReceivedEventArgs> channel, CancellationToken cancellationToken)
+    private static async Task<MqttApplicationMessageReceivedEventArgs?> GetMessageFromChannelAsync(
+        Channel<MqttApplicationMessageReceivedEventArgs, MqttApplicationMessageReceivedEventArgs> channel, CancellationToken cancellationToken)
     {
         if (!await channel.Reader.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
             return null;
-        
+
         return await channel.Reader.ReadAsync(cancellationToken).ConfigureAwait(false);
     }
 }

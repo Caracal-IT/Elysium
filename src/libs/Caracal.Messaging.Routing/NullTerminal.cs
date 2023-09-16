@@ -16,7 +16,7 @@ public sealed class NullTerminal(TerminalObjectOptions objectOptions) : ITermina
     public Task<Result<bool>> PublishAsync(Message message, CancellationToken cancellationToken = default)
     {
         Console.WriteLine(message.Payload.GetString());
-        
+
         return Task.FromResult(new Result<bool>(true));
     }
 }

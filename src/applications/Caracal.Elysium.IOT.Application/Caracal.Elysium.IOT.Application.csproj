@@ -7,36 +7,34 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-      <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <WarningLevel>8</WarningLevel>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\libs\Caracal.ErrorCodes\Caracal.ErrorCodes.csproj" />
-      <ProjectReference Include="..\..\libs\Caracal.IOT\Caracal.IOT.csproj" />
-      <ProjectReference Include="..\..\libs\Caracal.Messaging.Ingress\Caracal.Messaging.Ingress.csproj" />
-      <ProjectReference Include="..\..\libs\Caracal.Messaging\Caracal.Messaging.csproj" />
-      <ProjectReference Include="..\..\libs\Caracal.Text\Caracal.Text.csproj" />
+        <ProjectReference Include="..\..\libs\Caracal.ErrorCodes\Caracal.ErrorCodes.csproj"/>
+        <ProjectReference Include="..\..\libs\Caracal.IOT\Caracal.IOT.csproj"/>
+        <ProjectReference Include="..\..\libs\Caracal.Messaging.Ingress\Caracal.Messaging.Ingress.csproj"/>
+        <ProjectReference Include="..\..\libs\Caracal.Messaging\Caracal.Messaging.csproj"/>
+        <ProjectReference Include="..\..\libs\Caracal.Text\Caracal.Text.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="Microsoft.Extensions.Logging.Abstractions">
-        <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.0-preview.6.23329.11\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-      </Reference>
+        <Reference Include="Microsoft.Extensions.Logging.Abstractions">
+            <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.0-preview.6.23329.11\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MassTransit" Version="8.1.1-develop.1541" />
-      <PackageReference Include="Serilog" Version="3.0.2-dev-02044" />
+        <PackageReference Include="MassTransit" Version="8.1.1-develop.1541"/>
+        <PackageReference Include="Serilog" Version="3.0.2-dev-02044"/>
 
 
     </ItemGroup>
-
-
 
 
 </Project>
